@@ -1,397 +1,436 @@
-<script>
-  import { onMount } from 'svelte';
+<script lang="ts">
   import { goto } from '$app/navigation';
+  import { isMenuOpen, headerHeight } from '$lib/store';
+  import { fade } from 'svelte/transition';
+  import { cubicOut } from 'svelte/easing';
+  import { afterNavigate } from '$app/navigation';
+  import { onMount } from 'svelte';
 
   const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
-  export let headerVar = 'COMMON';
 
-  let issueNumber = '';
-  let issueHref = '';
-  let issueCover = '';
+  let { headerVar = 'COMMON', issuesData } = $props();
+  
+  const latestIssue = (issuesData?.find((issue: any) => issue.isLatestIssue === true));
 
-  const logoHref = '/';
+  /**
+   * Custom goto function that navigates to a URL and reloads the page
+   * @param url - The URL to navigate to (can be issue title or full path)
+   * @param options - Additional options for navigation
+   */
+  function navigateTo(url: string | URL, options?: {
+    replaceState?: boolean;
+    noScroll?: boolean;
+    keepFocus?: boolean;
+  }) {
+    const urlString = typeof url === 'string' ? url : url.toString();
+    const fullUrl = urlString.startsWith('/') ? urlString : `/issues/${urlString}`;
+    goto(fullUrl, {
+      ...options,
+      invalidateAll: true, // Always reload the page
+    });
+  }
 
-  let isOpen = false;
+  function gotoLatestIssue() {
+    if (latestIssue?.issueTitle) {
+      navigateTo(latestIssue.issueTitle);
+    }
+  }
 
   function toggleMenu() {
-    isOpen = !isOpen;
+    $isMenuOpen = !$isMenuOpen;
   }
 
-  // Questo serve a settare lo striscione in alto sull'ultima ISSUE automaticamente
-  import issuesData from "$lib/issues_new.json";
+  let repeatText = $derived(` © TBD ULTRAMAGAZINE - 30 YEARS ART BASEL - LISTE ART FAIR BASEL - 16-22 JUNE 2025 - MESSE BASEL - HALL 1.1 - `.repeat(100));
 
-  function setLatestIssueData() {
-    const latestIssue = issuesData.find(issue => issue.isLatestIssue === true);
-    if (latestIssue) {
-      issueHref = latestIssue.issueHref;
-      issueNumber = latestIssue.issueNumber;
-      issueCover = latestIssue.issueCover;
+  afterNavigate(() => {
+    if ($isMenuOpen) {
+      toggleMenu();
     }
-}
-
-  onMount(() => {
-    setLatestIssueData();
   });
 
-  //Ripetizioni banner
-  let repeatText;
-  $: repeatCount = 100;
-  $: if (issueNumber) {
-    const baseText = ` © TBD ULTRAMAGAZINE - 30 YEARS ART BASEL - LISTE ART FAIR BASEL - 16-22 JUNE 2025 - MESSE BASEL - HALL 1.1 - `;
-    repeatText = baseText.repeat(repeatCount);
-  }
+  let headerTopElement: HTMLElement | null = null;
+  let headerLowerElement: HTMLElement | null = null;
+
+  onMount(() => {
+    if (headerTopElement && headerLowerElement) {
+      headerHeight.set(headerTopElement.clientHeight + headerLowerElement.clientHeight);
+    }
+  });
 
 </script>
 
-<!-- Creare variante componente header -->
- 
-{#if headerVar === 'COMMON'}
+{#snippet header_buttons_container(type: string)}
+  {#if type === 'COMMON'}
+    <a class="rounded_button" href="#LATEST">
+      <p class="p2"> 
+          LATEST
+      </p>
+    </a>
+    <a class="rounded_button" href="#ISSUES">
+      <p class="p2"> 
+          ISSUES
+      </p>
+    </a>
+    <a class="rounded_button" href="#ABOUT">
+      <p class="p2"> 
+          ABOUT
+      </p>
+    </a>
+  {:else if type === 'ARTICLES' || type === 'ISSUES'}
+    <a class="rounded_button" href="#ISSUE">
+      <p class="p2"> 
+          ISSUE
+      </p>
+    </a>
+    <a class="rounded_button" href="#ABSTRACT">
+      <p class="p2"> 
+          ABSTRACT
+      </p>
+    </a>
+    <a class="rounded_button" href="#ARTICLES">
+      <p class="p2"> 
+          ARTICLES
+      </p>
+    </a>
+  {:else if type === 'ABOUT'}
+    <!--- NOTHING --->
+  {/if}
+{/snippet}
 
-  <header id={headerVar}>
-      <a class="header_top"
-      href='https://www.liste.ch/en/home.html'
-      target="_blank"
-      rel="noopener noreferrer">
-        <div class="banner">
-          <p3> 
-            {@html repeatText}
-          </p3> 
-        </div>
-      </a>
-      
-      <div class="header_lower">
-          <div class="header_buttons_container">
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="header_anchor" href="#LATEST">
-                <p2> 
-                    LATEST
-                </p2>
-              </a>
-
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="header_anchor" href="#ISSUES">
-                <p2> 
-                    ISSUES
-                </p2>
-              </a>
-
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="header_anchor" href="#ABOUT">
-                <p2> 
-                    ABOUT
-                </p2>
-              </a>
-          </div>
-
-          <a style="height: 100%; flex-shrink: 0" on:click={() => goto(logoHref)} data-sveltekit-reload>
-              <img style="height: 100%;" src={TbdLogo} alt="TBDLogoImage">
-          </a>
-
-          <div class="header_burger_container">
-
-              <div class="slider">
-                <div class="black_slider"></div>
-                <div class="white_slider"></div>
-                <p3 class="IT">IT</p3>
-                <p3 class="EN">EN</p3>
-              </div>
-
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="headeranchors" style="align-items: center; vertical-align: middle;">
-                <div class="burger-icon" on:click={toggleMenu}>
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
-                </div>
-              </a>
-          </div>
+<header id={headerVar} class="vertical_flex">
+    <a class="header_top"
+    bind:this={headerTopElement}
+    href='https://www.liste.ch/en/home.html'
+    target="_blank"
+    rel="noopener noreferrer">
+      <div class="banner">
+        <p class="p3"> 
+          {@html repeatText}
+        </p> 
       </div>
-  </header>
-
-  {:else if headerVar === 'ARTICLES'}
-
-    <header id={headerVar}>
-      <a class="header_top" href='../../../issues/{issueNumber}'>
-        <div class="banner">
-          <p3> 
-            {@html repeatText}
-          </p3> 
+    </a>
+    
+    <div class="header_lower" bind:this={headerLowerElement}>
+        <div class="header_buttons_container">
+          {@render header_buttons_container(headerVar)}
         </div>
-      </a>
-      
-      <div class="header_lower">
 
-          <a style="height: 100%; flex-shrink: 0" on:click={() => goto(logoHref)}>
-            <img style="height: 100%;" src={TbdLogo} alt="TBDLogoImage">
-          </a>
+        <a onclick={() => navigateTo('/')} href="/" data-sveltekit-preload class="header_logo">
+            <img src={TbdLogo} alt="TBDLogoImage">
+        </a>
 
-          <div class="header_burger_container">
-
-              <div class="slider">
-                <div class="black_slider"></div>
-                <div class="white_slider"></div>
-                <p3 class="IT">IT</p3>
-                <p3 class="EN">EN</p3>
-              </div>
-
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="headeranchors" style="align-items: center; vertical-align: middle;">
-                <div class="burger-icon" on:click={toggleMenu}>
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
+        <button class="burger_container" onclick={toggleMenu} aria-label="Toggle Menu" aria-roledescription="Toggle Menu" tabindex="0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
+          </svg> 
+        </button>
+    </div>
+    {#if $isMenuOpen}
+  <div class="slide_in_major vertical_flex" transition:fade={{ duration: 300, easing: cubicOut }}>
+    <div class="slide_in_container">
+      {#if latestIssue}
+      <div class="last_issue_container vertical_flex">
+          <h3>{latestIssue?.issueTitle}</h3>
+          <img src={latestIssue.issueCover} alt="Latest Issue">
+          <a class="rounded_button" onclick={() => navigateTo(latestIssue?.issueTitle || '')} href={`/issues/${latestIssue?.issueTitle}`}>
+            <p class="p2">IS OUT NOW!</p>
+                    </a> 
                 </div>
-              </a>
-          </div>
-      </div>
-    </header>
-
-  {:else if headerVar === 'ISSUES'}
-
-    <header id={headerVar}>
-      <a class="header_top" href='../../../issues/{issueNumber}'>
-        <div class="banner">
-          <p3> 
-            {@html repeatText}
-          </p3> 
-        </div>
-      </a>
-      
-      <div class="header_lower">
-          <div class="header_buttons_container">
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="header_anchor" href="#ISSUE">
-                <p2> 
-                    ISSUE
-                </p2>
-              </a>
-
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="header_anchor" href="#ABSTRACT">
-                <p2> 
-                    ABSTRACT
-                </p2>
-              </a>
-
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="header_anchor" href="#ARTICLES">
-                <p2> 
-                    ARTICLES
-                </p2>
-              </a>
-          </div>
-
-          <a style="height: 100%; flex-shrink: 0" on:click={() => goto(logoHref)}>
-              <img style="height: 100%;" src={TbdLogo} alt="TBDLogoImage">
+      {/if}
+      <div class="titles_container vertical_flex">
+        <p class="p1">ISSUES</p>
+        {#each (issuesData || []) as issue}
+        {#if issue.issueCategory === 'issues'}
+          <a href={`/issues/${issue.issueTitle}`} onclick={() => navigateTo(issue.issueTitle)} data-sveltekit-preload>  
+            <p class="p1">
+                → {issue.issueTitle}
+            </p>
           </a>
-
-          <div class="header_burger_container">
-
-              <div class="slider">
-                <div class="black_slider"></div>
-                <div class="white_slider"></div>
-                <p3 class="IT">IT</p3>
-                <p3 class="EN">EN</p3>
-              </div>
-
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a class="headeranchors" style="align-items: center; vertical-align: middle;">
-                <div class="burger-icon" on:click={toggleMenu}>
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
-                </div>
-              </a>
-          </div>
+          {/if}
+        {/each}
+                        </div>
+      <div class="titles_container vertical_flex">
+        <p class="p1">PUBLICATIONS</p>
+        {#each (issuesData || []) as publication}
+        {#if publication.issueCategory === 'publications'}
+        <a href={`/issues/${publication.issueTitle}`} onclick={() => navigateTo(publication.issueTitle)} data-sveltekit-preload>
+          <p class="p1">
+              → {publication.issueTitle}
+          </p>
+        </a>
+          {/if}
+        {/each}
       </div>
-    </header>
-  
-{/if}
+      <div class="titles_container vertical_flex">
+        <p class="p1">SPECIAL PROJECTS</p>
+        {#each issuesData as specialProject}
+        {#if specialProject.issueCategory === 'special projects'}
+        <a href={`/issues/${specialProject.issueTitle}`} onclick={() => navigateTo(specialProject.issueTitle)} data-sveltekit-preload>
+          <p class="p1">
+              → {specialProject.issueTitle}
+          </p>
+        </a>
+        {/if}
+      {/each}
+                        </div>
+      <div class="about_container vertical_flex">
+        <a href="/about">
+                        <h3>
+                            ABOUT
+                        </h3>
+                    </a>
+        
+                </div>
 
-
-<!-- Questo è il burger menu che spunta fuori -->
-<div class="slide_in_container" class:open={isOpen}>
-
-  <div class="slide_in_container_2">
-
-      <div class="slide_in_horizontal">
-
-          <div class="slide_in_latest_project">
-              
-            <div class="latest_project_mobile_container">
-              <h3>
-                {issueNumber}
-              </h3>
-
-              <div class="appear_mobile"> 
-                  <a class="button" href={issueHref}>
-                      <p3>
-                        IS OUT NOW!
-                      </p3>
-                  </a> 
-              </div>
-
+      <div class="instagram_container vertical_flex">
+        <a href="https://www.instagram.com/tbd.ultramagazine/" target="_blank" rel="noopener noreferrer">
+                    <h3>
+                      INSTAGRAM
+                    </h3>
+                  </a>
+                
             </div>
+        </div>
 
-              <img src={issueCover} href={issueHref} alt="">
-
-              <div class="disappear_mobile">
-                  <a class="button" href="../../../issues/{issueNumber}">
-                  <p3>
-                      IS OUT NOW!
-                  </p3>
-                  </a> 
-              </div>
-          
-              
-          </div>
-
-          <div class="slide_in_vertical">
-              
-              <div class="slide_in_threecard">
-
-                  <!-- svelte-ignore a11y-missing-attribute -->
-                  <div class="slide_in_card_vertical">
-                      <a class="title_container" on:click={() => {goto('/#ISSUES'); toggleMenu(); }}>
-                        <p1>
-                          ISSUES:
-                        </p1>
-                      </a>
-                    
-
-                      <a class="arrow_container_slider">
-                        <p2>
-                          →
-                        </p2>
-                      </a>
-
-                      <!-- svelte-ignore a11y-no-static-element-interactions -->
-                      <div>
-                          <!-- svelte-ignore a11y-click-events-have-key-events -->
-                          <!-- svelte-ignore a11y-missing-attribute -->
-                          <a on:click={() => { goto(`/issues/ISSUE1`); toggleMenu(); }} style="cursor: pointer;" data-sveltekit-reload>
-                              <p1> → 1ST Issue </p1>
-                          </a>
-
-                          <a on:click={() => { goto(`/issues/ISSUE2`); toggleMenu(); }} style="cursor: pointer;" data-sveltekit-reload>
-                              <p1> → 2ND Issue </p1>
-                          </a>
-                          
-                          <a on:click={() => { goto(`/issues/ISSUE3`); toggleMenu(); }} style="cursor: pointer;" data-sveltekit-reload>
-                              <p1> → 3RD Issue </p1>
-                          </a>
-
-                          <a on:click={() => { goto(`/issues/ISSUE4_VOL_I`); toggleMenu(); }} style="cursor: pointer;" data-sveltekit-reload>
-                            <p1> → 4RD Issue_Vol I </p1>
-                          </a>
-
-                          <a on:click={() => { goto(`/issues/ISSUE4_VOL_II`); toggleMenu(); }} style="cursor: pointer;" data-sveltekit-reload>
-                            <p1> → 4RD Issue_Vol II </p1>
-                          </a>
-
-                          <a on:click={() => { goto(`/issues/ISSUE4_VOL_III`); toggleMenu(); }} style="cursor: pointer;" data-sveltekit-reload>
-                            <p1> → 4RD Issue_Vol III</p1>
-                          </a>
-
-                      </div>
-
-                    </div>
-
-                  <div class="slide_in_card_vertical">
-                    <a class="title_container" on:click={() => { goto('/#ISSUES'); toggleMenu(); }}>
-                      <p1>
-                        PUBLICATIONS:
-                      </p1>
-                    </a>
-
-                      <!-- svelte-ignore a11y-missing-attribute -->
-                      <a class="arrow_container_slider">
-                        <p2>
-                          →
-                        </p2>
-                      </a>
-
-                      <div>
-                          <a on:click={() => { goto(`/issues/XPOST`); toggleMenu(); }}
-                            style="cursor: pointer;" data-sveltekit-reload >
-                              <p1> → X Post </p1>
-                          </a>
-
-                          <a on:click={() => { goto(`/issues/BLASTINGTHEORY`); toggleMenu(); }} style="cursor: pointer;" data-sveltekit-reload>
-                              <p1> → Blasting Theory </p1>
-                          </a>
-                      </div>
-                  </div>
-
-                  <div class="slide_in_card_vertical">
-                      
-                    <a class="title_container" on:click={() => { goto('/#ISSUES'); toggleMenu(); }} data-sveltekit-reload>
-                      <p1>
-                        SPECIAL PROJECTS:
-                      </p1>
-                    </a>
-
-                      <a class="arrow_container_slider">
-                        <p2>
-                          →
-                        </p2>
-                      </a>
-
-                      <div>
-                          <a on:click={() => { goto(`/issues/FOREHEADVULVA`); toggleMenu(); }} data-sveltekit-reload>
-                              <p1> → Forehead vulva </p1>
-                          </a>
-
-                          <a on:click={() => { goto(`/issues/LOOKATME_VOL_I`); toggleMenu(); }} data-sveltekit-reload>
-                              <p1> → Look at me Vol.I </p1>
-                          </a>
-                          
-                          <a on:click={() => { goto(`/issues/LOOKATME_VOL_II`); toggleMenu(); }} data-sveltekit-reload>
-                              <p1> → Look at me Vol.II </p1>
-                          </a>
-                      </div>
-                  </div>
-
-
-              </div>
-              
-              <div class="slide_in_card_horizontal">
-                  <a on:click={() => { goto('../../../about'); toggleMenu(); }} data-sveltekit-reload>
-                      <h3>
-                          ABOUT
-                      </h3>
+    <div class="slide_footer vertical_flex">
+              <div class="footer_text_container">
+                  <p class="p1">
+                  © TBD ULTRA MAGAZINE 2024
+                  </p>
+                  <a href="mailto:info@tbdultramagazine.com">
+                    <p class="p3">
+                      info@tbdultramagazine.com
+                    </p>
                   </a>
               </div>
-
-              <div class="slide_in_card_horizontal">
-                <a href="https://www.instagram.com/tbd.ultramagazine/?next=%2Fmkhtrrjby%2Ffeed%2F&hl=it" 
-                  target="_blank" 
-                  on:click={toggleMenu}
-                  rel="noopener noreferrer">
-                  <h3>
-                    INSTAGRAM
-                  </h3>
-                </a>
-            </div>
-              
-          </div>
-
-      </div>
-
-      <footer>
-          <section>
-            <div class="footer_text_container">
-                <p1>
-                © TBD ULTRA MAGAZINE 2024
-                </p1>
-                <a href="mailto:info@tbdultramagazine.com">
-                  <p3>
-                    info@tbdultramagazine.com
-                  </p3>
-                </a>
-            </div>
-          </section>
-      </footer>
-
+    </div>
   </div>
-</div>
+{/if}
+</header>
+
+
+<style>
+header {
+  position: fixed;
+  row-gap: 0px;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-color: transparent;
+  z-index: 1000;
+  transition: background-color 1s ease-in-out;
+  pointer-events: none;
+}
+
+.header_top {
+  display: block;
+  height: var(--spacing-m);
+  background-color: var(--white-white);
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--black-blue);
+  pointer-events: all;
+  position: relative;
+}
+
+  .banner {
+    display: inline-flex;
+    animation: scroll 600s linear;
+    align-items: center;
+    width: fit-content;
+    white-space: nowrap;
+    height: 100%;
+    width: fit-content;
+  }
+
+  .banner > p {
+    white-space: nowrap;
+  }
+
+  .header_lower {
+    width: 100%;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    padding: var(--spacing-s);
+    background-color: var(--black-blue);
+    pointer-events: all;
+    border-bottom: 1px solid var(--white-white);
+  }
+
+  .header_logo {
+    grid-column: 2;
+    height: 50px;
+    max-width: 120px;
+    place-self: center center;
+  }
+
+  .header_logo > img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .header_buttons_container {
+    grid-column: 1;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    gap: var(--spacing-s);
+    align-items: center;
+    color: var(--white-white);
+    place-self: center start;
+  }
+
+  .burger_container {
+    grid-column: 3;
+    width: 35px;
+    height: 35px;
+    place-self: center end;
+    background-color: transparent;
+    border: 0px;
+  }
+
+  .burger_container > svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--white-white);
+  }
+
+  /* Slide-in Menu */
+
+  .slide_in_major {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: -1;
+    background-color: var(--black-white);
+    row-gap: 0px;
+    pointer-events: all;
+  }
+
+  .slide_footer {
+  height: 10%;
+  align-items: center;
+  justify-content: center;
+  width: 100%;  
+}
+
+  .slide_in_container {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(16, 1fr);
+    height: 100%;
+}
+
+  .slide_in_container > div {
+    border: 1px solid var(--white-blue);
+}
+
+  .slide_in_container :nth-child(1) {
+    grid-column: span 4;
+    grid-row: span 6;
+    overflow: hidden;
+    place-items: center;
+}
+
+  .last_issue_container {
+  display: flex;
+  flex-direction: column;
+    row-gap: var(--spacing-s);
+  align-items: center;
+  justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing-m); 
+    border: 0px;
+}
+
+  .last_issue_container > img {
+    width: 70%;
+  height: auto;
+    aspect-ratio: 3/5;
+}
+
+  .titles_container {
+    width: 100%;
+    padding: var(--spacing-m);
+    grid-column: span 4;
+    grid-row: span 4;
+}
+
+  .titles_container > .p1 {
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-align: left;
+    font-weight: 600;
+    padding-bottom: var(--spacing-s);
+  }
+
+  .titles_container > a:hover {
+    text-decoration: underline !important;
+  }
+
+  .titles_container > a > .p1 {
+    line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    --webkit-line-clamp: 1;
+}
+
+  .about_container {
+    grid-column: span 12 / 17;
+    grid-row: 5;
+    text-align: center;
+    justify-content: center;
+}
+
+  .instagram_container {
+    grid-column: span 12 / 17;
+    grid-row: 6;
+    text-align: center;
+    justify-content: center;
+}
+
+  .footer_text_container {
+  display: flex;
+  flex-direction: column;
+    align-items: center;
+    width: fit-content;
+    padding: var(--spacing-s);
+    row-gap: 2px;
+    color: var(--white-white);
+}
+
+  /* Animations */
+  @keyframes scroll {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 480px) {
+    .header_buttons_container {
+      display: none;
+    }
+
+    .header_top {
+      height: 2vh;
+    }
+
+    .header_lower {
+      padding: var(--spacing_xs) var(--spacing-m);
+      height: 3.5vh;
+    }
+  }
+</style>

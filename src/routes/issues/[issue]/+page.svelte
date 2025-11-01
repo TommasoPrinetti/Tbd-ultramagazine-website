@@ -1,41 +1,37 @@
-<script>
-  // this is [issues]/page.svelte
-    
+<script lang="ts">
     import CowElement from '$components/issue_page/cow-element.svelte';
     import IssueHero from '$components/issue_page/issue-hero.svelte';
     import MagGallery from '$components/issue_page/mag-gallery.svelte';
     import Header from '$components/header/header.svelte';
-
     import Footer from '$components/footer/footer.svelte';
     import IssueArticle from '$components/issue_page/issue-article.svelte';
-    import Divider from '$components/issue_container/divider.svelte';
-
     import Ultrabutton from '$components/ULTRABUTTON/ultrabutton.svelte';
-
     import Manifesto from '$components/manifesto.svelte';
-
-    let issueHeroId = 'ISSUE';
-
-    let headerVar = 'ISSUES';
   
-    // Export the props from the load function
-    export let data;
-    //console.log("ISSUE", data.props.articles.parentIssue);
-    // console.log("ARTICLE", data.props.articles);
+    // In SvelteKit, page data comes via the 'data' prop
+    let { data } = $props();
     
-    let sectionNames = [];
+    // Destructure issue from data
+    const issue = data?.issue;
+    
+    // Get issues from layout data for Header (from parent layout)
+    const issues = $derived(data?.issues || []);
 
-    //mapping tramite labels
-    $: if (data && data.props && data.props.articles) {
-      const labels = data.props.articles.map(article => article.sectionLabel);
-      sectionNames = [...new Set(labels)];
-    }
+    console.log("📄 Page data:", data.issue);
+    console.log("📄 Issue Title:", issue?.issueTitle);
+    
+    // Get unique sections from articles
+    let sectionNames = $derived(
+      issue?.articles && Array.isArray(issue.articles)
+        ? [...new Set(issue.articles.map((article: any) => article.section).filter(Boolean))]
+        : []
+    );
 
   </script>
 
 <svelte:head>
-  <title>{data.props.issue.issueTitle}</title>
-  <meta name="description" content={data.props.issue.issueHeroText} />
+  <title>{issue?.issueTitle}</title>
+  <meta name="description" content={issue?.issueHeroText} />
 
   <meta property="og:site_name" content="TBD ULTRAMAGAZINE" />
 
@@ -43,72 +39,54 @@
 
   <meta property="og:type" content="issue" />
 
-  <meta property="og:title" content={data.props.issue.issueTitle} />
-  <meta property="og:description" content={data.props.issue.issueHeroText} />
-  <meta property="og:image" content={data.props.issue.issueThumbnail} />
+  <meta property="og:title" content={issue?.issueTitle} />
+  <meta property="og:description" content={issue?.issueHeroText} />
+  <meta property="og:image" content={issue?.issueThumbnail} />
 
-  <meta property="og:image:alt" content={data.props.issue.issueTitle} />
+  <meta property="og:image:alt" content={issue?.issueTitle} />
 
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="627" />
 </svelte:head>
   
-  <Header {headerVar}/>
+  <Header issuesData={issues} headerVar = 'ISSUES'/>
 
+  {#key issue?.issueTitle || issue?._id}
   <IssueHero 
-  issueNumber={data.props.issue.issueNumber}
-  issueTitle={data.props.issue.issueTitle}
-  issueHeroText={data.props.issue.issueHeroText}
-  issueThumbnail={data.props.issue.issueThumbnail}
-  UltraissueTitle={data.props.issue.UltraissueTitle}
-  UltraissueHeroText={data.props.issue.UltraissueHeroText}
-  UltraissueThumbnail={data.props.issue.UltraissueThumbnail}
-  issuePrice={data.props.issue.issuePrice || ''}
-  {issueHeroId}/>
-
-
-
-
-  <!-- Varianti delle varie pagine basati sul db -->
-
-  {#if data.props.issue.layoutOption === 'Classic'}
-    <MagGallery
-    magGalleryFolder = {data.props.issue.magGalleryFolder}
-    lengthNumber= {data.props.issue.lengthNumber}/>
-    <CowElement 
-    CowElementText = {data.props.issue.CowElementText}
-    CowElementImg = {data.props.issue.CowElementImg}
-    CowImgDidascalia = {data.props.issue.CowImgDidascalia}
-    UltraCowElementText = {data.props.issue.UltraCowElementText}
-    UltraCowElementTitle = {data.props.issue.UltraCowElementTitle}
-    UltraGalleryFolder = {data.props.issue.UltraGalleryFolder}
-    />
-
-  {:else if data.props.issue.layoutOption === 'Manifesto'}
-    <Manifesto {...data.props.issue} id="ABSTRACT"/>
-
-  {:else if data.props.issue.layoutOption === 'Ibrido'}
-    <MagGallery
-    magGalleryFolder = {data.props.issue.magGalleryFolder}
-    lengthNumber= {data.props.issue.lengthNumber}/>
-    <Manifesto {...data.props.issue} id="ABSTRACT"/>
-    <CowElement 
-    CowElementText = {data.props.issue.CowElementText}
-    CowElementImg = {data.props.issue.CowElementImg}
-    CowImgDidascalia = {data.props.issue.CowImgDidascalia}
-    UltraCowElementText = {data.props.issue.UltraCowElementText}
-    UltraCowElementTitle = {data.props.issue.UltraCowElementTitle}
-    UltraGalleryFolder = {data.props.issue.UltraGalleryFolder}
-    />
-  {/if}
-
+  issueData={issue}/>
   
 
-    <!-- Per ora c'è solo un caso in cui c'è una pagina con dei video -->
+  {#await issue?.galleryImages}
+  <p>Loading gallery images...</p>
+    {:then galleryImages}
+    {#if issue?.layoutOption === 'Classic'}
+        {#if galleryImages.length > 0}
+          <MagGallery images={galleryImages} />
+        {/if}
+        {#if issue?.CowElementText}
+          <CowElement issueData={issue} />
+        {/if}
 
-  {#if data.props.issue.issueNumber === 'ISSUE3'}
-    <div class="video_gallery">
-      <section>
+      {:else if issue?.layoutOption === 'Manifesto'}
+        {#if issue?.manifestoTitle}
+          <Manifesto {...issue} id="ABSTRACT" />
+        {/if}
+
+      {:else if issue?.layoutOption === 'Ibrido'}
+        {#if issue?.galleryImages?.length}
+          <MagGallery images={issue.galleryImages} />
+        {/if}
+        {#if issue?.manifestoTitle}
+        <Manifesto {...issue} id="ABSTRACT" />
+        {/if}
+        {#if issue?.CowElementText}
+          <CowElement issueData={issue} />
+        {/if}
+      {/if}
+  {/await}
+
+  {#if issue?.issueTitle === 'ISSUE 3'}
+    <div class="video_gallery ">
           <div class="single_video" id="video_#1">
               <div style="padding:100% 0 0 0;position:relative;">
                   <iframe src="https://player.vimeo.com/video/637629288?h=66b3ae91f8" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
@@ -123,47 +101,130 @@
               </div>
               <script src="https://player.vimeo.com/api/player.js"></script>
           </div>
-      </section>
-      <section>
-          <div class="single_video" id="video_#1">
+          <div class="single_video" id="video_#3">
               <div style="padding:100% 0 0 0;position:relative;">
                   <iframe src="https://player.vimeo.com/video/637618840?h=94b5d22c38" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
                   </iframe>
               </div>
               <script src="https://player.vimeo.com/api/player.js"></script>
           </div>
-          <div class="single_video" id="video_#2">
+          <div class="single_video" id="video_#4">
               <div style="padding:100% 0 0 0;position:relative;">
                   <iframe src="https://player.vimeo.com/video/637623042?h=365c31a28b" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
                   </iframe>
               </div>
               <script src="https://player.vimeo.com/api/player.js"></script>
           </div>
-      </section>
     </div>
   {/if}
 
-  <!-- CONTAINER degli articoli di ciascuna issue -->
-
   <div class="article_list_container" id="ARTICLES">
     {#each sectionNames as sectionName}
-      <Divider SectionName={sectionName} />
-      {#each data.props.articles.filter(article => article.sectionLabel === sectionName) as articleContent}
+      <div class="section_name">
+        <h3>{sectionName}</h3>
+      </div>
+      {#each issue?.articles?.filter((article: any) => article.section === sectionName) as articleContent}
         <IssueArticle
-        articleTitle = {articleContent.articleTitle}
-        articleText = {articleContent.articleText}
-        articleName = {articleContent.articleName}
-        parentIssue = {articleContent.parentIssue}
-        articleImg = {articleContent.articleImg}
+          articleData = {articleContent}
          />
       {/each}
     {/each} 
   </div>
+
 <Footer />
 
-{#if data.props.issue.isIssueUltra === true}
+{#if issue?.isIssueUltra === true}
   <Ultrabutton />
-
-
 {/if}
+
+{/key}
+<style>
+
+.video_gallery {
+  width: 100%;
+  height: fit-content;
+
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-m);
+  padding: 0px var(--spacing-l);
+}
+
+.article_list_container {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 0px;
+  row-gap: 0px;
+
+  border-bottom: var(--white-blue) 0.5px solid; 
+}
+
+.video_gallery > * {
+  grid-column: span 8;
+}
+
+.section_name {
+  padding: var(--spacing-m) var(--spacing-l);
+  border-top: solid 1px var(--white-blue) ;
+}
+
+.section_name h3 {
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+iframe {
+  frameborder: 0;
+}
+
+:global(iframe.footer) {
+  width: 100%;
+  height: 280px;
+}
+
+:global(.iframe.header_iframe) {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+@media screen and (max-width: 480px) {
+  .video_gallery {
+    row-gap: var(--spacing-s);
+  }
+
+  .video_gallery > * {
+    grid-column: span 2;
+  }
+
+  .article_list_container {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--spacing-s);
+    padding-bottom: var(--spacing-s);
+  }
+
+  .single_video {
+    grid-column: 1 / -1;
+  }
+
+  .single_video iframe {
+    height: 700px;
+    width: 700px;
+  }
+
+  iframe.footer {
+    width: 100%;
+    height: 200px;
+  }
+}
+</style>
   

@@ -1,56 +1,69 @@
 <script>
-    export let CowElementText
-    export let CowElementImg
-    export let CowImgDidascalia
-
-    export let UltraCowElementText
-    export let UltraCowElementTitle
-
-    export let UltraGalleryFolder
-    export let lengthNumber = 10;
-
+    let { 
+        issueData
+    } = $props();
 </script>
 
-<section id="ABSTRACT" class="default_appear"> 
-    <!-- TYPO -->
-    <div class="responsive-container">
-        <p2>
-            {CowElementText}
-        </p2>
+<div id="ABSTRACT" class="base_grid cow_element default_appear"> 
+    <div class="cow_text">
+        <p class="p2">
+            {@html issueData?.CowElementText}
+        </p>
     </div>
 
-    <!-- IMG -->
-    <div class="imgcontainer">
-        <img style="width: 100%;" src={CowElementImg} alt="">
-        <d1>{@html CowImgDidascalia}</d1>
+    <div class="cow_img">
+        <img style="width: 100%;" src={issueData?.CowElementImg} alt="">
+        <p class="d1">{@html issueData?.CowImgDidascalia}</p>
     </div>
-</section>
+</div>
 
-<section id="ABSTRACT" class="ultra_appear"> 
-    <!-- TYPO -->
-    <div class="responsive-container">
-        <p2>
-            <strong>{UltraCowElementTitle}</strong>
+<div id="ABSTRACT" class="base_grid ultra_appear"> 
+    <div class="cow_text">
+        <p class="p2">
+            <strong>{issueData?.UltraCowElementTitle}</strong>
             <br>
             <br>
-            {@html UltraCowElementText}
-        </p2>
+            {@html issueData?.UltraCowElementText}
+        </p>
     </div>
 
-    <!-- IMG -->
-    <div class="imgcontainer">
-        <gallery>
-            <section>
-                {#each Array.from({ length: lengthNumber }, (_, i) => i + 1) as imageIndex}
-                    <a id={`image${imageIndex}`}>
-                        <img src={`${UltraGalleryFolder}/GALLERY_${imageIndex}.webp`} alt={`GALLERY_${imageIndex}`}>
-                    </a>
+    <div class="cow_img">
+            <div class="base_grid gallery">
+                {#each Array.from({ length: 10 }, (_, i) => i + 1) as imageIndex}
+                    <div id={`image${imageIndex}`}>
+                        <img src={`${issueData?.UltraGalleryFolder}/GALLERY_${imageIndex}.webp`} alt={`GALLERY_${imageIndex}`}>
+                    </div>
                 {/each}
-            </section>
+            </div>
 
             <div class="switch_container">
-                <p1>NEXT →</p1>
+                <p class="p1">NEXT →</p>
             </div>
-        </gallery>
     </div>
-</section>
+</div>
+
+<style>
+    .cow_element {
+        padding: 0px var(--spacing-l);
+    }
+
+    .cow_text {
+        grid-column: span 8;
+        height: fit-content;
+    }
+
+    .cow_img {
+        display: flex;
+        height: auto;
+        flex-direction: column;
+        gap: var(--spacing-s);
+        grid-column: span 8;
+    }
+
+    .cow_img img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        object-position: center;
+    }
+</style>

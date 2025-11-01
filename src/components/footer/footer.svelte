@@ -1,9 +1,7 @@
 <script>
-    // Define constants for image paths and URLs
     const footerImg = '/IDENTITY_IMAGES/FOOTERTEXT.svg';
     const mailchimpActionUrl = "https://polimi.us21.list-manage.com/subscribe/post?u=2088942308759df62fadb3c02&id=8b4532ecd0&f_id=00b7ece6f0";
 
-    // You may want to add a function to dynamically load the Mailchimp script if needed
     function loadMailchimpScript() {
         const script = document.createElement('script');
         script.src = "//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js";
@@ -26,10 +24,10 @@
     <section>
         <div class="footer_button_container">
             <a class="button" href="https://www.instagram.com/tbd.ultramagazine/">
-                <p2>INSTAGRAM</p2>
+                <p class="p2">INSTAGRAM</p>
             </a>
             <a class="button" href="https://www.facebook.com/TBDultramagazine/">
-                <p2>FACEBOOK</p2>
+                <p class="p2">FACEBOOK</p>
             </a>
         </div>
 
@@ -68,4 +66,154 @@
     #mc_embed_signup > :nth-child(2) {
         margin: 0px 0px 0px 0px;
     }
+
+
+footer {
+  border-style: solid;
+  border-width: 1px 0px 0px 0px;
+  border-color: var(--white-blue);
+  padding-top: var(--spacing-m);
+  padding-bottom: var(--spacing-s);
+
+  width: 100%;
+  height: fit-content;
+
+  color: var(--white-blue);
+  display: flex;
+  flex-direction: column;
+  row-gap: 0px;
+
+  z-index: 50;
+  background-color: var(--black-blue);
+}
+
+
+footer section {
+  width: auto;
+  padding-top: 0;
+  padding-left: var(--spacing-l);
+  padding-right: var(--spacing-l);
+  margin-bottom: var(--spacing-l);
+  margin-top: var(--spacing-m);
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.footer_button_container {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+  padding: var(--spacing_zero);
+}
+
+
+
+.newsletter_container {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--spacing-s);
+  grid-column: span 6;
+  overflow: hidden;
+  padding: 0px;
+
+  font-family: Helvetica;
+}
+
+.newsletter_container > .p1 {
+  color: var(--white-white);
+  align-self: center;
+  text-transform: uppercase;
+}
+
+.newsletter_container > #mc_embed_signup {
+  background-color: transparent;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-m);
+}
+
+.newsletter_container > #mc_embed_signup > form {
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-s);
+  margin: 0px;
+  align-items: center;
+}
+
+#mce-EMAIL {
+  width: 100%;
+  height: 30px;
+}
+
+.mc-field-group {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.footer_high {
+  width: 100%;
+  height: auto;
+}
+
+.footer_high > img {
+  width: 100%;
+  height: auto;
+}
+
+.s-scHqDo4uKJDU {
+  color: var(--white-white);
+}
+
+@media screen and (max-width: 480px) {
+  .newsletter_container {
+    overflow: hidden;
+    padding: var(--spacing-s);
+    width: 100%;
+  }
+
+  footer {
+    border-style: solid;
+    border-width: 1px 0px 0px 0px;
+    border-color: var(--white-blue);
+    padding-top: var(--spacing_xs);
+    padding-bottom: var(--spacing-s);
+
+    width: 100%;
+    height: fit-content;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 0px;
+  }
+
+  footer section {
+    width: auto;
+    padding-left: var(--spacing-m);
+    padding-right: var(--spacing-m);
+    margin-bottom: var(--spacing-m);
+    padding: 0px;
+    justify-content: center;
+  }
+
+  .footer_button_container {
+    width: fit-content;
+    display: none;
+    flex-direction: column;
+    row-gap: 15px;
+    padding: var(--spacing_zero);
+  }
+
+  .footer_text_container {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+    padding: var(--Spacing_Zero);
+  }
+}
 </style>

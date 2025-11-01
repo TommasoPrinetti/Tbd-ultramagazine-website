@@ -1,22 +1,12 @@
 <script>
-    // This is issue-hero.svelte
-    export let issueNumber;
-    export let issueTitle;
-    export let issueHeroText;
-    export let issueThumbnail;
-    export let UltraissueTitle;
-    export let UltraissueHeroText;
-    export let UltraissueThumbnail;
-    export let issuePrice = '';
-    export let issueHeroId = '';
-
-    import issuesData from "$lib/issues_new.json";
-    let currentIssueData = issuesData.find(issue => issue.issueNumber === issueNumber);
+    let { 
+        issueData,
+    } = $props();
 
     import BuyButtons from '$components/buy_buttons.svelte';
     import BuyingSlider from '$components/sliders/buying_slider.svelte';
 
-    let isSliderOpen = false;
+    let isSliderOpen = $state(false);
 
     function handleSliderToggle() {
         isSliderOpen = !isSliderOpen;
@@ -24,23 +14,17 @@
   
 </script>
 
-
-<hero id={issueHeroId} class="default_appear">
-    <section id="READ THE WHOLE ARTICLE">           
-        <div class="herotextcontainer"> 
+    <div id="ISSUE" class="base_grid hero_section default_appear" >          
+        <div class="hero_text vertical_flex"> 
             <h1>
-                {issueTitle}
+                {@html issueData?.issueTitle}
             </h1>
 
-            <h3>
-                ../ {issueNumber}
-            </h3>
+            <p class="p2">
+                {@html issueData?.issueHeroText}
+            </p>
 
-            <p2>
-                {issueHeroText}
-            </p2>
-
-            {#if issuePrice }
+            {#if issueData?.issuePrice }
                 <div class="buybuttons">
                     {#each [1, 2, 3] as _}
                         <BuyButtons on:toggle={handleSliderToggle} />
@@ -50,39 +34,70 @@
             
         </div>
         
-        <div class="heroimgcontainer">
-            <img class="heroimgcontainer" src={issueThumbnail} alt={issueNumber}>
+        <div class="hero_img">
+            <img src={issueData?.issueThumbnail} alt={issueData?.issueNumber}>
         </div>
 
-    </section>
-</hero>
+    </div>
 
-<hero class="ultra_appear">
-    <section id="READ THE WHOLE ARTICLE">           
+    <div class="base_grid hero_section ultra_appear">           
         <div class="herotextcontainer"> 
             <h1>
-                {UltraissueTitle}
+                {issueData?.UltraissueTitle}
             </h1>
 
             <h3>
-                ../ {issueNumber}_ULTRA
+                ../ {issueData?.issueNumber}_ULTRA
             </h3>
 
-            <p2>
-                {UltraissueHeroText}
-            </p2>
+            <p class="p2">
+                {issueData?.UltraissueHeroText}
+            </p>
         </div>
         
         <div class="heroimgcontainer">
-            <img class="heroimgcontainer" src={UltraissueThumbnail}>
+            <img class="heroimgcontainer" src={issueData?.UltraissueThumbnail}>
         </div>
 
-    </section>
-</hero>
+    </div>
 
 <BuyingSlider
-  {isSliderOpen}
-  issueCover={currentIssueData?.issueCover}
-  issuePrice={currentIssueData?.issuePrice}
-  issueNumber={issueNumber}
+  bind:isSliderOpen
+  issueData={issueData}
 />
+
+<style>
+
+    
+.hero_section {
+  padding: 0px var(--spacing-l);
+  border-bottom: var(--white-blue) 1px solid;
+  border-top: var(--white-blue) 1px solid;
+}
+
+.hero_img {
+    grid-column: span 8;
+    border-left: 1px solid var(--white-blue);
+    border-right: 1px solid var(--white-blue);
+}
+
+.hero_text {
+    grid-column: span 8;
+    padding: var(--spacing-xl) 0px;
+    row-gap: var(--spacing-m);
+    
+}
+
+.hero_text p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-clamp: 5;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80%;
+}
+
+
+
+</style>

@@ -1,42 +1,34 @@
-<script>
-    import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
+<script lang="ts">
+    import { afterNavigate } from '$app/navigation';
 
     import ArticleHero from '$components/article/article_hero.svelte';
     import Header from "$components/header/header.svelte";
     import ArticleCorpus from '$components/article/article_corpus.svelte';
     import Footer from '$components/footer/footer.svelte'
+    import issuesData from "$lib/issues_new.json";
+    import articlesData from "$lib/articles_new.json";
 
-    /** @type {import('./$types').PageData} */
-    export let data;
-    export let article;
+    import { isUltraMode } from '$lib/store';
 
-    $: article = data.props.article;
+    let { data } = $props();
+    
+    let article = $derived(data.props.article);
+    let headerVar = 'ARTICLES';
 
-    export let headerVar='ARTICLES';
-
-    //console.log("article", article)
-
-    let isUltra = false;
-    let isFirstLoad = true;
-
-    onMount(() => {
+    afterNavigate(() => {
         updateBodyClass();
     });
 
     function updateBodyClass() {
         if (typeof window !== "undefined") {
             const bodyClassList = document.body.classList;
-            if (isUltra) {
-                bodyClassList.add('ultra');
-                bodyClassList.remove('default');
-            } else {
-                bodyClassList.add('default');
-                bodyClassList.remove('ultra');
+            if (!data.props.issue?.isIssueUltra) {
+                    bodyClassList.add('default');
+                    bodyClassList.remove('ultra');
+                    isUltraMode.set(false);
+                }
             }
-            isFirstLoad = false;
         }
-    }
 </script>
 
 <svelte:head>
@@ -55,8 +47,9 @@
 
 </svelte:head>
 
-<Header {headerVar}/>
+<Header {headerVar} issuesData={issuesData} />
 
-<ArticleHero {...article}/>
-<ArticleCorpus key={article.articleTitle} {article} />
+<ArticleHero article={article}/>
+
+<ArticleCorpus article={article} issuesData={issuesData} articlesData={articlesData}/>
 <Footer />
