@@ -98,6 +98,26 @@
     width: 80%;
 }
 
+@media screen and (max-width: 480px) {
+  .hero_section {
+    padding: var(--spacing-s);
+  }
+
+  .hero_text {
+    grid-column: span 2;
+    padding: var(--spacing-l) 0px 0px 0px;
+  }
+
+  .hero_text p {
+    width: 98%;
+  }
+
+  .hero_img {
+    grid-column: span 2;
+    border: 1px solid var(--white-blue);
+  }
+}
+
 
 
 </style>

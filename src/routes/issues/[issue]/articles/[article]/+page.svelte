@@ -2,9 +2,9 @@
     import { afterNavigate } from '$app/navigation';
 
     import ArticleHero from '$components/article/article_hero.svelte';
-    import Header from "$components/header/header.svelte";
+    import Header from "$components/header.svelte";
     import ArticleCorpus from '$components/article/article_corpus.svelte';
-    import Footer from '$components/footer/footer.svelte'
+    import Footer from '$components/footer.svelte'
     import issuesData from "$lib/issues_new.json";
     import articlesData from "$lib/articles_new.json";
 

@@ -32,27 +32,20 @@ hr {
 }
 
 @media screen and (max-width: 480px) {
-    .divider {
-    display: flex;
-    width: 100%;
+  .divider {
     height: fit-content;
     border-style: solid;
+    row-gap: var(--spacing-m);
     border-width: 1px 0px 0px 0px;
-    padding: var(--spacing_xs) var(--spacing-s) var(--spacing_xs) var(--spacing-s);
+    padding: var(--spacing-s);
   }
 
   .divider h3 {
-    display: flex;
-    text-transform: uppercase;
-    color: var(--white-blue);
-    opacity: 50%;
-    grid-column: 1 / fit-content;
+    padding: 0px;
   }
 
-  .divider h3:hover {
-    text-transform: uppercase;
-    opacity: 100%;
-    color: var(--white-blue);
+  hr {
+    display: none;
   }
 }
 

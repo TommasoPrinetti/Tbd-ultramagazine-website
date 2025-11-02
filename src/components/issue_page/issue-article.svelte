@@ -87,28 +87,30 @@ article h2 {
 
 @media screen and (max-width: 480px) {
 
-  
-
   article {
     width: fit-content;
     height: fit-content;
     border-width: 0px 0px 0px 0px;
-    padding: var(--spacing_zero) var(--spacing-m) var(--spacing_zero)
-      var(--spacing-m);
+    grid-row-gap: 0px;
+    margin: var(--spacing_zero) var(--spacing-s);
+    padding: var(--spacing_zero);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--white-blue);
   }
 
   .article_img_container {
     width: 100%;
     height: fit-content;
     aspect-ratio: 4/3;
-    grid-column: 1 / span 2;
-    border-style: solid;
-    border-width: 0px 0px 0.5px 0px;
+    grid-column: span 2;
+    border: none;
+    border-bottom: 1px solid var(--white-blue);
   }
 
   .article_text_container {
     height: fit-content;
-    grid-column: 1 / span 2;
+    grid-column: span 2;
     display: flex;
     flex-direction: column;
 
@@ -117,25 +119,11 @@ article h2 {
 
     vertical-align: middle;
     justify-content: center;
+    border: none;
   }
 
-  article section {
-    grid-template-columns: repeat(2, 1fr);
-    margin-top: 0;
-
-    gap: var(--spacing_xs);
-    padding: 0;
-
-    border-style: solid;
-    border-width: 0.75px;
-    border-color: var(--white-blue);
-
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  article .p3 {
-    max-width: 90%;
+  .article_text_container > p {
+    width: 98%;
   }
 }
 </style>

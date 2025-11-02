@@ -16,11 +16,11 @@
   {#if regularIssues.length > 0}
     <Divider category="issues" />
       <div class="issues_container" id="ISSUES">
-        <section>
+        <div class="base_grid">
           {#each regularIssues as issue (issue.issueTitle)}
             <SingleIssue issueData={issue} />
           {/each}
-        </section>
+        </div>
       </div>
   {/if}
 </div>
@@ -30,11 +30,11 @@
   {#if publications.length > 0}
   <Divider category="publications" />
     <div class="issues_container" id="PUBLICATIONS">
-      <section>
+      <div class="base_grid">
         {#each publications as issue (issue.issueTitle)}
           <SingleIssue issueData={issue} />
         {/each}
-      </section>
+      </div>
     </div>
   {/if}
 </div>
@@ -58,7 +58,7 @@
 .issues_container {
   display: flex;
   flex-direction: column;
-  row-gap: var(--spacing_xs);
+  row-gap: var(--spacing-xs);
 
   width: 100%;
   height: fit-content;
@@ -66,25 +66,11 @@
   padding: 0px var(--spacing-m);
 }
 
-.issues_container section {
-  height: fit-content;
-  column-gap: var(--spacing-m);
-  grid-auto-flow: row;
-
-  overflow: hidden;
-}
-
-
-
 @media screen and (max-width: 480px) {
-  
-  .issues_container section {
-    padding: var(--spacing-s);
-    column-gap: var(--spacing-s);
-    grid-auto-flow: row;
-    flex-wrap: wrap;
-    overflow: hidden;
-  }
 
+  .issues_container {
+    padding: var(--spacing-s);
+  }
+ 
 }
 </style>

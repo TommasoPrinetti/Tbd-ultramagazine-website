@@ -2,8 +2,8 @@
     import CowElement from '$components/issue_page/cow-element.svelte';
     import IssueHero from '$components/issue_page/issue-hero.svelte';
     import MagGallery from '$components/issue_page/mag-gallery.svelte';
-    import Header from '$components/header/header.svelte';
-    import Footer from '$components/footer/footer.svelte';
+    import Header from '$components/header.svelte';
+    import Footer from '$components/footer.svelte';
     import IssueArticle from '$components/issue_page/issue-article.svelte';
     import Ultrabutton from '$components/ULTRABUTTON/ultrabutton.svelte';
     import Manifesto from '$components/manifesto.svelte';
@@ -208,7 +208,7 @@ iframe {
     height: fit-content;
     display: flex;
     flex-direction: column;
-    row-gap: var(--spacing-s);
+    row-gap: var(--spacing-m);
     padding-bottom: var(--spacing-s);
   }
 
@@ -224,6 +224,15 @@ iframe {
   iframe.footer {
     width: 100%;
     height: 200px;
+  }
+
+  .section_name {
+    padding: var(--spacing-s);
+    border-top: solid 1px var(--white-blue) ;
+  }
+
+  .section_name h3 {
+    text-align: left;
   }
 }
 </style>

@@ -12,28 +12,31 @@
   
   const latestIssue = (issuesData?.find((issue: any) => issue.isLatestIssue === true));
 
-  /**
-   * Custom goto function that navigates to a URL and reloads the page
-   * @param url - The URL to navigate to (can be issue title or full path)
-   * @param options - Additional options for navigation
-   */
   function navigateTo(url: string | URL, options?: {
     replaceState?: boolean;
     noScroll?: boolean;
     keepFocus?: boolean;
   }) {
     const urlString = typeof url === 'string' ? url : url.toString();
+    
+    // Handle hash anchors (e.g., /#ISSUES) - navigate to homepage with hash
+    if (urlString.includes('#')) {
+      const [path, hash] = urlString.split('#');
+      const targetPath = path === '/' || path === '' ? '/' : path;
+      goto(`${targetPath}#${hash}`, {
+        ...options,
+        invalidateAll: true,
+        noScroll: false, // Allow scrolling to hash anchor
+      });
+      return;
+    }
+    
+    // Regular navigation
     const fullUrl = urlString.startsWith('/') ? urlString : `/issues/${urlString}`;
     goto(fullUrl, {
       ...options,
-      invalidateAll: true, // Always reload the page
+      invalidateAll: true,
     });
-  }
-
-  function gotoLatestIssue() {
-    if (latestIssue?.issueTitle) {
-      navigateTo(latestIssue.issueTitle);
-    }
   }
 
   function toggleMenu() {
@@ -134,26 +137,33 @@
           <img src={latestIssue.issueCover} alt="Latest Issue">
           <a class="rounded_button" onclick={() => navigateTo(latestIssue?.issueTitle || '')} href={`/issues/${latestIssue?.issueTitle}`}>
             <p class="p2">IS OUT NOW!</p>
-                    </a> 
-                </div>
+          </a> 
+      </div>
       {/if}
       <div class="titles_container vertical_flex">
-        <p class="p1">ISSUES</p>
+        <a href="#ISSUES" onclick={() => navigateTo('/#ISSUES')}>
+          <p class="p1">ISSUES</p>
+        </a>
+        
         {#each (issuesData || []) as issue}
         {#if issue.issueCategory === 'issues'}
-          <a href={`/issues/${issue.issueTitle}`} onclick={() => navigateTo(issue.issueTitle)} data-sveltekit-preload>  
+          <a href={`/issues/${issue.issueTitle}`} onclick={() => navigateTo(issue.issueTitle)} data-sveltekit-preload class="link">  
             <p class="p1">
                 → {issue.issueTitle}
             </p>
           </a>
           {/if}
         {/each}
-                        </div>
+      </div>
+      
       <div class="titles_container vertical_flex">
-        <p class="p1">PUBLICATIONS</p>
+        <a href="#PUBLICATIONS" onclick={() => navigateTo('#ISSUES')}>
+          <p class="p1">PUBLICATIONS</p>
+        </a>
+        
         {#each (issuesData || []) as publication}
-        {#if publication.issueCategory === 'publications'}
-        <a href={`/issues/${publication.issueTitle}`} onclick={() => navigateTo(publication.issueTitle)} data-sveltekit-preload>
+        {#if publication.issueCategory === '#PUBLICATIONS'}
+        <a href={`/issues/${publication.issueTitle}`} onclick={() => navigateTo(publication.issueTitle)} data-sveltekit-preload class="link">
           <p class="p1">
               → {publication.issueTitle}
           </p>
@@ -162,10 +172,12 @@
         {/each}
       </div>
       <div class="titles_container vertical_flex">
-        <p class="p1">SPECIAL PROJECTS</p>
+        <a href="#SPECIAL_PROJECTS" onclick={() => navigateTo('#SPECIAL_PROJECTS')}>
+          <p class="p1">SPECIAL PROJECTS</p>
+        </a>
         {#each issuesData as specialProject}
         {#if specialProject.issueCategory === 'special projects'}
-        <a href={`/issues/${specialProject.issueTitle}`} onclick={() => navigateTo(specialProject.issueTitle)} data-sveltekit-preload>
+        <a href={`/issues/${specialProject.issueTitle}`} onclick={() => navigateTo(specialProject.issueTitle)} data-sveltekit-preload class="link">
           <p class="p1">
               → {specialProject.issueTitle}
           </p>
@@ -363,7 +375,7 @@ header {
     grid-row: span 4;
 }
 
-  .titles_container > .p1 {
+  .titles_container > a > .p1 {
     text-transform: uppercase;
     text-decoration: underline;
     text-align: left;
@@ -407,6 +419,10 @@ header {
     color: var(--white-white);
 }
 
+.link {
+  display: block;
+}
+
   /* Animations */
   @keyframes scroll {
     0% {
@@ -429,8 +445,51 @@ header {
     }
 
     .header_lower {
-      padding: var(--spacing_xs) var(--spacing-m);
-      height: 3.5vh;
+      padding: var(--spacing-xs) var(--spacing-s);
+    }
+
+    .header_logo {
+      height: 50px;
+      grid-column: 1;
+      place-self: center start;
+    }
+
+    .slide_in_container {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0px;
+    }
+
+    .last_issue_container {
+      padding: var(--spacing-s);
+      display: flex;
+      flex-direction: row;
+      height: 35%;
+      column-gap: var(--spacing-s);
+    }
+
+    .titles_container {
+      padding: var(--spacing-s);
+    }
+
+    .last_issue_container > img {
+      width: 30%;
+      aspect-ratio: 3/5;
+    }
+
+    .titles_container > a > .p1 {
+      padding: 0px;
+      text-align: left;
+      place-self: start;
+    }
+
+    .about_container, .instagram_container {
+      height: 20%;
+      padding: var(--spacing-s);
+    }
+
+    .link {
+      display: none;
     }
   }
 </style>

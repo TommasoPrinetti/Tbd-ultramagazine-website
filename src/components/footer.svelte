@@ -180,7 +180,7 @@ footer section {
     border-style: solid;
     border-width: 1px 0px 0px 0px;
     border-color: var(--white-blue);
-    padding-top: var(--spacing_xs);
+    padding-top: var(--spacing-xs);
     padding-bottom: var(--spacing-s);
 
     width: 100%;

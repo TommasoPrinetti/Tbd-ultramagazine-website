@@ -1,6 +1,6 @@
 <script lang="ts">
     import NotFound from "$components/notfound.svelte";
-    import Header from "$components/header/header.svelte";
+    import Header from "$components/header.svelte";
 
     // Access issues from layout data via props
     let { data } = $props();

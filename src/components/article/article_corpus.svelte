@@ -244,7 +244,7 @@
     }
 
     .index {
-        gap: var(--spacing_xs);
+        gap: var(--spacing-xs);
     }
 
     .index svg {

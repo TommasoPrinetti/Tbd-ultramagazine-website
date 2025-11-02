@@ -66,4 +66,19 @@
         object-fit: cover;
         object-position: center;
     }
+
+    @media screen and (max-width: 480px) {
+        .cow_element {
+            padding: var(--spacing-s);
+        }
+
+        .cow_text {
+            grid-column: span 2;
+        }
+
+        .cow_img {
+            grid-column: span 2;
+        }
+        
+    }
 </style>

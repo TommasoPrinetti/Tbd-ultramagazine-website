@@ -100,4 +100,25 @@
     margin-top: 3%;
     }
 
+
+    @media screen and (max-width: 480px) {
+        :global(.buybuttons) {
+            flex-direction: row;
+            margin-top: var(--spacing-xs);
+        }
+
+        :global(.index_container .buybuttons) {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        :global(.base_grid) {
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-flow: row;
+        }
+    }
+
 </style>

@@ -1,12 +1,11 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import Header from '$components/header/header.svelte';
-    import Footer from '$components/footer/footer.svelte';
+    import Header from '$components/header.svelte';
+    import Footer from '$components/footer.svelte';
     import LandHero from '$components/landing_hero/landing_hero.svelte';
     import IssueContainer from '$components/issue_container/issue_container.svelte';
     import LatestIssue from '$components/latest_issue/latest_issue.svelte';
     import Ultrabutton from '$components/ULTRABUTTON/ultrabutton.svelte';
-    import { afterNavigate } from '$app/navigation';
 
     let contentPrev = "TBD, acronimo di “To Be Defined”, è un progetto editoriale che dal 2019 pubblica volumi tematici e collabora con artist* per la realizzazione di eventi a essi collegati. Il percorso critico di ogni numero si sviluppa a partire da fatti d’attualità definiti zeitgeisting, notizie o icone virali che rivelano lo spirito culturale del tempo. Ogni fatto è sintomo e/o coadiuvante di tematiche più ampie, trattate sotto forma di saggi scritti e contenuti visivi. A partire da un focus specifico sulla contemporaneità"
 
@@ -103,6 +102,7 @@
   .about {
     overflow: hidden;
     grid-template-columns: repeat(2, 1fr);
+    padding: var(--spacing-s);
   }
 
   .about_text_container {

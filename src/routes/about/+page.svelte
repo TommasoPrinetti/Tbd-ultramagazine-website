@@ -1,13 +1,13 @@
 <script lang="ts">
-    import Header from "../../components/header/header.svelte";
-    import Footer from "../../components/footer/footer.svelte";
+    import Header from "$components/header.svelte";
+    import Footer from "$components/footer.svelte";
 
     let { data } = $props();
 </script>
 
 <Header headerVar='ARTICLES' issuesData={data.issues}/>
 
-        <div class="about_container" id="MANIFESTO">
+        <div class="about_container vertical_flex" id="MANIFESTO">
             <h1>
                 MANIFESTO
             </h1>
@@ -43,6 +43,13 @@
     width: 60%;
     margin: 0 auto;
     padding: var(--spacing-l) 0px;
+}
+
+@media screen and (max-width: 480px) {
+  .about_container {
+    width: 100%;
+    padding: var(--spacing-l) var(--spacing-s);
+  }
 }
     
 </style>

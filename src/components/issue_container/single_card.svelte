@@ -44,13 +44,6 @@ import { goto } from '$app/navigation';
   opacity: 100%;
 }
 
-.card a {
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
 .card_image_container {
   width: 35%;
   height: 100%;
@@ -86,24 +79,25 @@ import { goto } from '$app/navigation';
 
 @media screen and (max-width: 480px) {
   .card {
-    flex-direction: column;
-
     grid-column: span 2;
     height: fit-content;
     border-radius: 10px;
 
     margin: 0px;
     padding-bottom: 0px;
+    column-gap: 0px;
 
     display: flex;
     position: relative;
     flex-direction: row;
+
     width: 100%;
     opacity: 100%;
+    
   }
 
   .card_image_container {
-    width: 100%;
+    width: 30%;
     height: auto;
     overflow: hidden;
     border-bottom: 1px solid white;
@@ -121,12 +115,10 @@ import { goto } from '$app/navigation';
   .card_text_container {
     display: flex;
     flex-direction: column;
-    width: 90%;
+    width: 70%;
     height: fit-content;
-    padding-top: var(--spacing-s);
-    padding-bottom: var(--spacing-s);
-    padding-right: var(--spacing-s);
-    row-gap: var(--spacing_xs);
+    padding: var(--spacing-s);
+    row-gap: var(--spacing-s);
     margin: 0;
   }
 }

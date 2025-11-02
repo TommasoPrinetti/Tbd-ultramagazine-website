@@ -37,7 +37,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    row-gap: var(--spacing_xs);
+    row-gap: var(--spacing-xs);
   }
 
   .last_issue_text {

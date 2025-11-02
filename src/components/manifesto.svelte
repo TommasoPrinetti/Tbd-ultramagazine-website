@@ -34,13 +34,9 @@
     }
 
 @media screen and (max-width: 480px) {
-    .manifesto {
-        width: 100%;
-        height: fit-content;
-    }
 
     .manifesto {
-        padding: var(--spacing-m);
+        padding: var(--spacing-l) var(--spacing-s);
         display: flex;
         flex-direction: column;
         row-gap: var(--spacing-s);

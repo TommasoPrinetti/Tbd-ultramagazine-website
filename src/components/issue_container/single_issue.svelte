@@ -40,7 +40,7 @@
 
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--spacing_xs);
+  gap: var(--spacing-xs);
   flex-shrink: 0;
   grid-column: span 2;
 
@@ -101,7 +101,7 @@ body.ultra > div > div > section > a > .single_issue_ultrahover {
 
 @media screen and (max-width: 480px) {
   .single_issue {
-    gap: var(--spacing_xs);
+    gap: var(--spacing-xs);
     flex-shrink: 0;
     grid-column: span 1;
     opacity: 100%;

@@ -3,7 +3,7 @@
   --spacing-l: 60px;
   --spacing-m: 30px;
   --spacing-s: 15px;
-  --spacing_xs: 5px;
+  --spacing-xs: 5px;
   --spacing_zero: 0px;
 
   --primary-font: Helvetica;
@@ -179,7 +179,7 @@ body.ultra > div > .default_appear {
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: var(--spacing_xs);
+    gap: var(--spacing-xs);
     grid-column: 1 / span 2;
   }
 
@@ -405,18 +405,5 @@ h3 {
   .ultrawhiteblob {
     width: 100%;
     height: auto;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .buybuttons {
-    flex-direction: row;
-    margin-top: var(--spacing_xs);
-  }
-
-  .index_container .buybuttons {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
   }
 }

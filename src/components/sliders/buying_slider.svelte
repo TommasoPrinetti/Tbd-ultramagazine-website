@@ -147,7 +147,7 @@
   height: fit-content;
 }
 
-.paypal_button_container {
+:global(.paypal_button_container) {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -156,7 +156,7 @@
 .Title_drop_container {
   display: flex;
   flex-direction: column;
-  row-gap: var(--spacing_xs);
+  row-gap: var(--spacing-xs);
 }
 
 .exit_slider {
@@ -187,7 +187,7 @@
   bottom: auto;
   width: fit-content;
   height: 100vh;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   padding: var(--spacing-l);
   background-color: var(--black-white);
@@ -195,7 +195,6 @@
   align-items: center;
   justify-content: center;
   row-gap: var(--spacing-m);
-  overflow-y: auto;
   transform: translateX(100%);
   transition: transform 1s ease-in-out;
   z-index: 500;
@@ -221,20 +220,27 @@
 
 @media screen and (max-width: 480px) {
   .buying_slider {
-    padding: 0px;
-    padding-top: var(--spacing-xl);
-    width: 100vw;
-    height: 100vh;
-    top: 0;
+
+:global(#paypal-button-container) {
+  width: 100%;
+  height: fit-content;
+}
+
+    padding-top: var(--spacing-m);
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start;
   }
 
   .exit_slider {
     position: absolute;
-    top: 10vh;
+    right: 0;
     right: var(--spacing-m);
     stroke: var(--white-blue);
     opacity: 100%;
   }
+
+
 }
 </style>
     
