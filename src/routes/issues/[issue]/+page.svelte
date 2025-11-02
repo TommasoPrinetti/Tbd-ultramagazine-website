@@ -5,27 +5,50 @@
     import Header from '$components/header.svelte';
     import Footer from '$components/footer.svelte';
     import IssueArticle from '$components/issue_page/issue-article.svelte';
-    import Ultrabutton from '$components/ULTRABUTTON/ultrabutton.svelte';
+    import Ultrabutton from '$components/ultrabutton.svelte';
     import Manifesto from '$components/manifesto.svelte';
+    import { isUltraMode } from '$lib/store';
+    import { afterNavigate } from '$app/navigation';
   
-    // In SvelteKit, page data comes via the 'data' prop
     let { data } = $props();
     
-    // Destructure issue from data
-    const issue = data?.issue;
-    
-    // Get issues from layout data for Header (from parent layout)
-    const issues = $derived(data?.issues || []);
+    let issue = $state(data?.issue);
+    let issues = $state(data?.issues || []);
+    let temporaryCalls = $state(data?.temporaryCalls || []);
 
-    console.log("📄 Page data:", data.issue);
-    console.log("📄 Issue Title:", issue?.issueTitle);
-    
-    // Get unique sections from articles
+    $effect(() => {
+      issue = data?.issue || {};
+      issues = data?.issues || [];
+      temporaryCalls = data?.temporaryCalls || [];
+    });
+
+    $inspect("📄 Page data:", issue);
+    $inspect("📄 Issue Title:", issues);
+
     let sectionNames = $derived(
       issue?.articles && Array.isArray(issue.articles)
         ? [...new Set(issue.articles.map((article: any) => article.section).filter(Boolean))]
         : []
     );
+
+
+    $effect(() => {
+      if (typeof window !== "undefined") {
+        const bodyClassList = document.body.classList;
+        if (!issue?.isIssueUltra) {
+          bodyClassList.add('default');
+          bodyClassList.remove('ultra');
+          isUltraMode.set(false);
+        }
+      }
+    });
+
+    afterNavigate(() => {
+      console.log("afterNavigate");
+      if (!issue?.isIssueUltra && $isUltraMode === true) {
+        isUltraMode.set(false);
+      }
+    });
 
   </script>
 
@@ -49,7 +72,7 @@
   <meta property="og:image:height" content="627" />
 </svelte:head>
   
-  <Header issuesData={issues} headerVar = 'ISSUES'/>
+  <Header issuesData={issues} temporaryCalls={data.temporaryCalls} headerVar = 'ISSUES'/>
 
   {#key issue?.issueTitle || issue?._id}
   <IssueHero 
@@ -60,24 +83,24 @@
   <p>Loading gallery images...</p>
     {:then galleryImages}
     {#if issue?.layoutOption === 'Classic'}
-        {#if galleryImages.length > 0}
+        {#if $isUltraMode}
+          <MagGallery images={issue.UltraGalleryImages} />
+        {:else}
           <MagGallery images={galleryImages} />
         {/if}
-        {#if issue?.CowElementText}
-          <CowElement issueData={issue} />
-        {/if}
-
       {:else if issue?.layoutOption === 'Manifesto'}
         {#if issue?.manifestoTitle}
           <Manifesto {...issue} id="ABSTRACT" />
         {/if}
 
       {:else if issue?.layoutOption === 'Ibrido'}
-        {#if issue?.galleryImages?.length}
-          <MagGallery images={issue.galleryImages} />
-        {/if}
+          {#if $isUltraMode}
+            <MagGallery images={issue.UltraGalleryImages} />
+          {:else}
+            <MagGallery images={issue.galleryImages} />
+          {/if}
         {#if issue?.manifestoTitle}
-        <Manifesto {...issue} id="ABSTRACT" />
+          <Manifesto {...issue} id="ABSTRACT" />
         {/if}
         {#if issue?.CowElementText}
           <CowElement issueData={issue} />
@@ -133,7 +156,7 @@
 
 <Footer />
 
-{#if issue?.isIssueUltra === true}
+{#if issue?.isIssueUltra}
   <Ultrabutton />
 {/if}
 

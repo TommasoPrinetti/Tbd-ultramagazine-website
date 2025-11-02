@@ -4,14 +4,28 @@
     import Footer from '$components/footer.svelte';
     import LandHero from '$components/landing_hero/landing_hero.svelte';
     import IssueContainer from '$components/issue_container/issue_container.svelte';
-    import LatestIssue from '$components/latest_issue/latest_issue.svelte';
-    import Ultrabutton from '$components/ULTRABUTTON/ultrabutton.svelte';
+    import Ultrabutton from '$components/ultrabutton.svelte';
+    import Divider from '$components/article/divider.svelte';
 
     let contentPrev = "TBD, acronimo di “To Be Defined”, è un progetto editoriale che dal 2019 pubblica volumi tematici e collabora con artist* per la realizzazione di eventi a essi collegati. Il percorso critico di ogni numero si sviluppa a partire da fatti d’attualità definiti zeitgeisting, notizie o icone virali che rivelano lo spirito culturale del tempo. Ogni fatto è sintomo e/o coadiuvante di tematiche più ampie, trattate sotto forma di saggi scritti e contenuti visivi. A partire da un focus specifico sulla contemporaneità"
 
     const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
 
     let { data } = $props();
+
+    console.log("📄 Temporary Calls:", data.temporaryCalls);
+
+    // Helper function to create a slug from a title for URL routing
+    function createSlug(title: string | null | undefined): string {
+      if (!title) return "";
+      return title
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w\-]+/g, "")
+        .replace(/\-\-+/g, "-")
+        .replace(/^-+/, "")
+        .replace(/-+$/, "");
+    }
 </script>
 
 <svelte:head>
@@ -29,14 +43,33 @@
   <meta property="og:image:height" content="627" />
 </svelte:head>
 
-{#key window.location.href}
-
-  <Header issuesData={data.issues}/>
+  <Header issuesData={data.issues} temporaryCalls={data.temporaryCalls}/>
   <LandHero />
-  <LatestIssue/>
+  
+  
+  <div class="temporary_call_container vertical_flex" id="LATEST">
+    <Divider category="temporary call" />
+    <h2>
+      {data.temporaryCalls[0]?.title}
+    </h2>
+  
+    <img src={data.temporaryCalls[0]?.image} alt="Last Issue">
+  
+    <div class="temporary_call_text">
+      <div class="vertical_flex" style="align-items: center; justify-content: center;">
+          <a class="rounded_button" style="z-index: 2;"
+          href={`/calls/${createSlug(data.temporaryCalls[0]?.title)}`}
+          data-sveltekit-preload>
+            <p class="p2">{data.temporaryCalls[0]?.ctaText}</p>
+          </a>
+      </div>
+    </div>
+  </div>
+
+
   <IssueContainer issuesData={data.issues}/>
 
-    <section id="ABOUT"class="about default_appear">
+    <section id="ABOUT"class="about ">
       <div class="about_text_container">
         <h1>
           ABOUT
@@ -59,7 +92,7 @@
     </section>
 
   <Footer />
-{/key}
+  
 <Ultrabutton />
 
 <style>
@@ -98,6 +131,29 @@
   height: 100%;
 }
 
+.temporary_call_container {
+  width: 100%;
+  height: fit-content;
+  align-items: center;
+  justify-content: center;
+}
+
+.temporary_call_container > h2 {
+  text-align: center;
+}
+
+.temporary_call_container > img {
+  width: 30%;
+  aspect-ratio: auto;
+  object-fit: containe;
+  object-position: center;
+}
+
+.temporary_call_text {
+  width: 100%;
+  grid-column: span 16;
+}
+
 @media screen and (max-width: 480px) {
   .about {
     overflow: hidden;
@@ -123,6 +179,13 @@
 
   .about_image_container img {
     width: 100%;
+  }
+
+  .temporary_call_container > img {
+    width: 80%;
+    aspect-ratio: auto;
+    object-fit: containe;
+    object-position: center;
   }
 }
 

@@ -54,9 +54,13 @@
         gap: 8px;
         width: fit-content;
         border-radius: 20px;
-        border: 0.5px solid var(--white-blue);
-        transition: background-color 1.4s, color 0.2s;
-        background-color: var(--black-white);
+        border: 0.5px solid var(--white-white);
+        transition: background-color 0.3s, color 0.2s;
+        background-color: var(--black-blue);
+    }
+
+    :global(.rounded_button > p) {
+        color: var(--white-white);
     }
 
     :global(.rounded_button:hover) {
@@ -98,6 +102,32 @@
     :global(.buybuttons > :nth-child(6)) {
     transform: rotate(-3deg);
     margin-top: 3%;
+    }
+
+    :global(::selection) {
+        background-color: var(--white-blue);
+        color: var(--black-white);
+    }
+
+    :global(a:-webkit-any-link) {
+        color: inherit;
+        text-decoration: none;
+    }
+    :global(a:any-link) {
+        color: inherit;
+        text-decoration: none;
+    }
+    :global(a:hover) {
+        color: inherit;
+        text-decoration: none;
+    }
+    :global(a:active) {
+        color: inherit;
+        text-decoration: none;
+    }
+    :global(a:visited) {
+        color: inherit;
+        text-decoration: none;
     }
 
 

@@ -112,42 +112,6 @@ section {
   grid-auto-flow: column;
 }
 
-body.ultra > div > header > div > div > a > .p2 {
-  font-family: Helvetica;
-}
-
-body.ultra > div > header > div > div > div > .p3 {
-  font-family: Helvetica;
-}
-
-body.ultra > div > .ULTRABUTTON > div > .p3 {
-  font-family: Helvetica;
-}
-
-body.ultra .ultra_appear,
-body.ultra .ultra_appear div .p2,
-body.ultra .ultra_appear section div h1,
-body.ultra .ultra_appear section div h3,
-body.ultra .ultra_appear section div .p2 {
-  font-family: Arial, Helvetica, sans-serif;
-}
-body.ultra div header a div .p3 {
-  color: var(--black-blue);
-}
-
-body.default > div > .ultra_appear {
-  display: none;
-}
-
-body.ultra > div > .default_appear {
-  display: none;
-}
-
-.responsive-container_abstract {
-  grid-column: span 12;
-  height: fit-content;
-}
-
 @media screen and (max-width: 480px) {
   section {
     grid-template-columns: repeat(2, 1fr);

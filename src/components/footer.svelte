@@ -37,7 +37,7 @@
                     <div id="mc_embed_signup_scroll">
                         <h3>Subscribe to the newsletter</h3>
                         <div class="mc-field-group">
-                            <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required="" placeholder="Your Email address here">
+                            <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required={true} placeholder="Your Email address here">
                         </div>
                         <div id="mce-responses" class="clear">
                             <div class="response" id="mce-error-response" style="display:none;"></div>

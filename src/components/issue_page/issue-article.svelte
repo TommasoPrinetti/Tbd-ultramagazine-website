@@ -2,18 +2,18 @@
     let { articleData } = $props();
 
     import { goto } from '$app/navigation';
-
+    import { isUltraMode } from '$lib/store';
 </script>
 
 <article class="base_grid">
-        <div class="article_img_container">
+        <div class="article_img_container" class:overlay={$isUltraMode} >
             <img src={articleData.thumbnail.asset.url} alt="AltText">
         </div>
 
         <div class="vertical_flex article_text_container">
           <h2> {@html articleData.title} </h2>
           <p class="p3"> {@html articleData.description} </p>
-        <!--
+        <!-- This is the old navigational btn
           <button class="rounded_button" onclick={() => { goto(`./${articleData.parentIssue}/articles/${articleData.articleName}`); }} data-sveltekit-reload>
               <p class="p2"> 
                   READ ALL
@@ -63,6 +63,11 @@ article h2 {
 .article_img_container img:hover {
   transform: scale(1.05);
   transition: transform 1s ease-in-out;
+}
+
+.article_img_container.overlay img {
+  filter: blur(1px) hue-rotate(180deg);
+  transition: filter 1s ease-in-out;
 }
 
 .article_text_container {

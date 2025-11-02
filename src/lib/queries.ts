@@ -18,6 +18,7 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
   },
   issuePrice,
   issueCategory,
+  issueNumber,
   galleryImgList[]{
     asset->,
     alt
@@ -42,6 +43,10 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
     asset->,
     alt
   },
+  ultraHoverImg{
+    asset->,
+    alt
+  },
   UltraissueTitle,
   UltraissueHeroText,
   UltraissueThumbnail{
@@ -50,6 +55,11 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
   },
   UltraCowElementTitle,
   UltraCowElementText,
+  UltraCowElementImg{
+    asset->,
+    alt
+  },
+  UltraCowImgDidascalia,
   UltraGalleryFolder[]{
     asset->,
     alt
@@ -58,4 +68,25 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
   manifestoTitle,
   manifestoText,
   fileDownloadButton
+}`;
+
+// Query to get all Temporary Calls
+export const allTemporaryCallsQuery = groq`*[_type == "temporaryCall"] | order(_createdAt desc) {
+  _id,
+  _createdAt,
+  title,
+  image{
+    asset->,
+    alt
+  },
+  description,
+  ctaText,
+  openDate,
+  endDate,
+  referenceEmail,
+  hrefExternal,
+  downloadPdf{
+    asset->,
+    url
+  }
 }`;

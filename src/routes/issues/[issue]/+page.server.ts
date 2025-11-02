@@ -6,14 +6,14 @@ export async function load({
   depends,
 }: {
   params: { issue: string };
-  parent: () => Promise<{ issues: any[] }>;
+  parent: () => Promise<{ issues: any[]; temporaryCalls: any[] }>;
   depends: (id: string) => void;
 }) {
   // Ensure this load function runs when params change
   depends(`issue:${params.issue}`);
 
   // Get issues from layout
-  const { issues } = await parent();
+  const { issues, temporaryCalls } = await parent();
 
   // Find issue by issueTitle (routing is based on issueTitle, not issueNumber)
   const issue = issues.find((issue: any) => issue.issueTitle === params.issue);
@@ -24,6 +24,7 @@ export async function load({
 
   return {
     issue,
-    issues, // Include issues from layout for use in component
+    issues,
+    temporaryCalls,
   };
 }

@@ -2,43 +2,28 @@
     let { 
         issueData
     } = $props();
+    import { isUltraMode } from '$lib/store';
 </script>
 
-<div id="ABSTRACT" class="base_grid cow_element default_appear"> 
+<div id="ABSTRACT" class="base_grid cow_element "> 
     <div class="cow_text">
         <p class="p2">
-            {@html issueData?.CowElementText}
+            {#if $isUltraMode}
+                {@html issueData?.UltraCowElementText}
+            {:else}
+                {@html issueData?.CowElementText}
+            {/if}
         </p>
     </div>
 
     <div class="cow_img">
-        <img style="width: 100%;" src={issueData?.CowElementImg} alt="">
-        <p class="d1">{@html issueData?.CowImgDidascalia}</p>
-    </div>
-</div>
-
-<div id="ABSTRACT" class="base_grid ultra_appear"> 
-    <div class="cow_text">
-        <p class="p2">
-            <strong>{issueData?.UltraCowElementTitle}</strong>
-            <br>
-            <br>
-            {@html issueData?.UltraCowElementText}
-        </p>
-    </div>
-
-    <div class="cow_img">
-            <div class="base_grid gallery">
-                {#each Array.from({ length: 10 }, (_, i) => i + 1) as imageIndex}
-                    <div id={`image${imageIndex}`}>
-                        <img src={`${issueData?.UltraGalleryFolder}/GALLERY_${imageIndex}.webp`} alt={`GALLERY_${imageIndex}`}>
-                    </div>
-                {/each}
-            </div>
-
-            <div class="switch_container">
-                <p class="p1">NEXT →</p>
-            </div>
+        {#if $isUltraMode}
+            <img style="width: 100%;" src={issueData?.UltraCowElementImg} alt="">
+            <p class="d1">{@html issueData?.UltraCowImgDidascalia}</p>
+        {:else}
+            <img style="width: 100%;" src={issueData?.CowElementImg} alt="">
+            <p class="d1">{@html issueData?.CowImgDidascalia}</p>
+        {/if}
     </div>
 </div>
 

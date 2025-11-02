@@ -14,21 +14,6 @@
     
     let article = $derived(data.props.article);
     let headerVar = 'ARTICLES';
-
-    afterNavigate(() => {
-        updateBodyClass();
-    });
-
-    function updateBodyClass() {
-        if (typeof window !== "undefined") {
-            const bodyClassList = document.body.classList;
-            if (!data.props.issue?.isIssueUltra) {
-                    bodyClassList.add('default');
-                    bodyClassList.remove('ultra');
-                    isUltraMode.set(false);
-                }
-            }
-        }
 </script>
 
 <svelte:head>

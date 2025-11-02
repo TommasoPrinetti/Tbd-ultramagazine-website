@@ -7,5 +7,4 @@
     const issues = $derived(data?.issues || []);
 </script>
 
-<Header issuesData={issues}/>
 <NotFound />

@@ -8,19 +8,22 @@
     function cycleImages() {
         currentImageIndex = (currentImageIndex + 1) % images.length;
     }
- </script>
+ </script>  
 
- <div class="gallery default_appear">
-    <h2>CLICK ME</h2>
-    <section>
-        {#each images as image, index}
-            <button id={`image${index + 1}`} onclick={cycleImages} class:current={currentImageIndex === index}>
-                <img src={image} alt={`GALLERY_${index + 1}`}>
-            </button>
-        {/each}
-    </section>
-</div>
-
+{#if images}
+  {#if images.length > 0}
+    <div class="gallery">
+        <h2>CLICK ME</h2>
+        <section>
+            {#each images as image, index}
+                <button id={`image${index + 1}`} onclick={cycleImages} class:current={currentImageIndex === index}>
+                    <img src={image} alt={`GALLERY_${index + 1}`}>
+                </button>
+            {/each}
+        </section>
+    </div>
+  {/if}
+{/if}
 <style>
 
 .gallery {
@@ -74,7 +77,7 @@
 
 .gallery section button img {
   height: 70vh;
-  object-fit: cover;
+  object-fit: contain;
   aspect-ratio: 16/9;
 }
 

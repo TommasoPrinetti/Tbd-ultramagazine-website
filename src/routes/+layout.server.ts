@@ -1,9 +1,12 @@
 import { sanity } from "$lib/sanity.server";
-import { allIssuesQuery } from "$lib/queries";
+import { allIssuesQuery, allTemporaryCallsQuery } from "$lib/queries";
 import { urlFor } from "$lib/imageUrl";
 
 export const load = async () => {
-  const allIssues = await sanity.fetch(allIssuesQuery);
+  const [allIssues, allTemporaryCalls] = await Promise.all([
+    sanity.fetch(allIssuesQuery),
+    sanity.fetch(allTemporaryCallsQuery),
+  ]);
 
   // Transform Sanity image objects to URLs, this is an internal processor
   const issues = allIssues.map((issue: any) => ({
@@ -13,6 +16,7 @@ export const load = async () => {
     CowElementImg: urlFor(issue.CowElementImg),
     ultraHoverImg: urlFor(issue.ultraHoverImg),
     UltraissueThumbnail: urlFor(issue.UltraissueThumbnail),
+    UltraCowElementImg: urlFor(issue.UltraCowElementImg),
     // Transform gallery image arrays
     galleryImages: issue.galleryImgList
       ? issue.galleryImgList.map((img: any) => urlFor(img)).filter(Boolean)
@@ -22,8 +26,12 @@ export const load = async () => {
       : [],
   }));
 
-  // This step is a conversion of the imported sanity query
-  // Data loaded here is available to all child routes via $page.data
+  // Transform Sanity image and file objects to URLs for temporary calls
+  const temporaryCalls = allTemporaryCalls.map((call: any) => ({
+    ...call,
+    image: urlFor(call.image),
+    downloadPdfUrl: call.downloadPdf?.asset?.url || null,
+  }));
 
-  return { issues };
+  return { issues, temporaryCalls };
 };

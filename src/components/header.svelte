@@ -8,7 +8,7 @@
 
   const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
 
-  let { headerVar = 'COMMON', issuesData } = $props();
+  let { headerVar = 'COMMON', issuesData, temporaryCalls } = $props();
   
   const latestIssue = (issuesData?.find((issue: any) => issue.isLatestIssue === true));
 
@@ -19,23 +19,22 @@
   }) {
     const urlString = typeof url === 'string' ? url : url.toString();
     
-    // Handle hash anchors (e.g., /#ISSUES) - navigate to homepage with hash
     if (urlString.includes('#')) {
       const [path, hash] = urlString.split('#');
       const targetPath = path === '/' || path === '' ? '/' : path;
       goto(`${targetPath}#${hash}`, {
         ...options,
         invalidateAll: true,
-        noScroll: false, // Allow scrolling to hash anchor
+        noScroll: false,
       });
       return;
     }
-    
-    // Regular navigation
+
     const fullUrl = urlString.startsWith('/') ? urlString : `/issues/${urlString}`;
     goto(fullUrl, {
       ...options,
       invalidateAll: true,
+      replaceState: true,
     });
   }
 
@@ -43,7 +42,7 @@
     $isMenuOpen = !$isMenuOpen;
   }
 
-  let repeatText = $derived(` © TBD ULTRAMAGAZINE - 30 YEARS ART BASEL - LISTE ART FAIR BASEL - 16-22 JUNE 2025 - MESSE BASEL - HALL 1.1 - `.repeat(100));
+  let repeatText = $derived(` © TBD ULTRAMAGAZINE - ${temporaryCalls[0]?.title} - `.repeat(100));
 
   afterNavigate(() => {
     if ($isMenuOpen) {
@@ -53,6 +52,7 @@
 
   let headerTopElement: HTMLElement | null = null;
   let headerLowerElement: HTMLElement | null = null;
+
 
   onMount(() => {
     if (headerTopElement && headerLowerElement) {
@@ -118,7 +118,7 @@
           {@render header_buttons_container(headerVar)}
         </div>
 
-        <a onclick={() => navigateTo('/')} href="/" data-sveltekit-preload class="header_logo">
+        <a onclick={() => navigateTo('/')} data-sveltekit-preload class="header_logo">
             <img src={TbdLogo} alt="TBDLogoImage">
         </a>
 
@@ -135,20 +135,20 @@
       <div class="last_issue_container vertical_flex">
           <h3>{latestIssue?.issueTitle}</h3>
           <img src={latestIssue.issueCover} alt="Latest Issue">
-          <a class="rounded_button" onclick={() => navigateTo(latestIssue?.issueTitle || '')} href={`/issues/${latestIssue?.issueTitle}`}>
+          <a class="rounded_button" onclick={() => navigateTo(latestIssue?.issueTitle || '')}>
             <p class="p2">IS OUT NOW!</p>
           </a> 
       </div>
       {/if}
       <div class="titles_container vertical_flex">
         <a href="#ISSUES" onclick={() => navigateTo('/#ISSUES')}>
-          <p class="p1">ISSUES</p>
+          <p class="p1" style="text-decoration: underline;">ISSUES</p>
         </a>
         
         {#each (issuesData || []) as issue}
         {#if issue.issueCategory === 'issues'}
-          <a href={`/issues/${issue.issueTitle}`} onclick={() => navigateTo(issue.issueTitle)} data-sveltekit-preload class="link">  
-            <p class="p1">
+          <a onclick={() => navigateTo(issue.issueTitle)} data-sveltekit-preload class="link">  
+            <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
                 → {issue.issueTitle}
             </p>
           </a>
@@ -158,27 +158,27 @@
       
       <div class="titles_container vertical_flex">
         <a href="#PUBLICATIONS" onclick={() => navigateTo('#ISSUES')}>
-          <p class="p1">PUBLICATIONS</p>
+          <p class="p1" style="text-decoration: underline;">PUBLICATIONS</p>
         </a>
         
         {#each (issuesData || []) as publication}
-        {#if publication.issueCategory === '#PUBLICATIONS'}
-        <a href={`/issues/${publication.issueTitle}`} onclick={() => navigateTo(publication.issueTitle)} data-sveltekit-preload class="link">
-          <p class="p1">
-              → {publication.issueTitle}
-          </p>
-        </a>
+        {#if publication.issueCategory === 'publications'}
+          <a onclick={() => navigateTo(publication.issueTitle)} data-sveltekit-preload class="link">
+            <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
+                → {publication.issueTitle}
+            </p>
+          </a>
           {/if}
         {/each}
       </div>
       <div class="titles_container vertical_flex">
         <a href="#SPECIAL_PROJECTS" onclick={() => navigateTo('#SPECIAL_PROJECTS')}>
-          <p class="p1">SPECIAL PROJECTS</p>
+          <p class="p1" style="text-decoration: underline;">SPECIAL PROJECTS</p>
         </a>
         {#each issuesData as specialProject}
         {#if specialProject.issueCategory === 'special projects'}
-        <a href={`/issues/${specialProject.issueTitle}`} onclick={() => navigateTo(specialProject.issueTitle)} data-sveltekit-preload class="link">
-          <p class="p1">
+        <a onclick={() => navigateTo(specialProject.issueTitle)} data-sveltekit-preload class="link">
+          <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
               → {specialProject.issueTitle}
           </p>
         </a>
@@ -186,7 +186,7 @@
       {/each}
                         </div>
       <div class="about_container vertical_flex">
-        <a href="/about">
+        <a onclick={() => navigateTo('/about')}>
                         <h3>
                             ABOUT
                         </h3>
@@ -195,7 +195,7 @@
                 </div>
 
       <div class="instagram_container vertical_flex">
-        <a href="https://www.instagram.com/tbd.ultramagazine/" target="_blank" rel="noopener noreferrer">
+        <a onclick={() => navigateTo('https://www.instagram.com/tbd.ultramagazine/')} target="_blank" rel="noopener noreferrer">
                     <h3>
                       INSTAGRAM
                     </h3>
@@ -233,6 +233,10 @@ header {
   z-index: 1000;
   transition: background-color 1s ease-in-out;
   pointer-events: none;
+}
+
+.p1, .p2, h3 {
+  font-family: Helvetica;
 }
 
 .header_top {
@@ -326,11 +330,13 @@ header {
   }
 
   .slide_footer {
-  height: 10%;
-  align-items: center;
-  justify-content: center;
-  width: 100%;  
-}
+    height: 10%;
+    align-items: center;
+    justify-content: center;
+    width: 100%;  
+    border: 1px solid var(--white-blue);
+    color: var(--white-blue);
+  }
 
   .slide_in_container {
     display: grid;
@@ -351,15 +357,16 @@ header {
 }
 
   .last_issue_container {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
     row-gap: var(--spacing-s);
-  align-items: center;
-  justify-content: center;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
     padding: var(--spacing-m); 
     border: 0px;
+    color: var(--white-blue);
 }
 
   .last_issue_container > img {
@@ -377,7 +384,6 @@ header {
 
   .titles_container > a > .p1 {
     text-transform: uppercase;
-    text-decoration: underline;
     text-align: left;
     font-weight: 600;
     padding-bottom: var(--spacing-s);
@@ -416,11 +422,14 @@ header {
     width: fit-content;
     padding: var(--spacing-s);
     row-gap: 2px;
-    color: var(--white-white);
 }
 
 .link {
   display: block;
+}
+
+.link >  .p1 {
+  padding-bottom: 0px;
 }
 
   /* Animations */

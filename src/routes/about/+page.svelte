@@ -5,7 +5,7 @@
     let { data } = $props();
 </script>
 
-<Header headerVar='ARTICLES' issuesData={data.issues}/>
+<Header headerVar='ARTICLES' issuesData={data.issues} temporaryCalls={data.temporaryCalls}/>
 
         <div class="about_container vertical_flex" id="MANIFESTO">
             <h1>

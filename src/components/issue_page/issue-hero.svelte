@@ -5,6 +5,7 @@
 
     import BuyButtons from '$components/buy_buttons.svelte';
     import BuyingSlider from '$components/sliders/buying_slider.svelte';
+    import { isUltraMode } from '$lib/store';
 
     let isSliderOpen = $state(false);
 
@@ -14,17 +15,26 @@
   
 </script>
 
-    <div id="ISSUE" class="base_grid hero_section default_appear" >          
+    <div id="ISSUE" class="base_grid hero_section" >          
         <div class="hero_text vertical_flex"> 
             <h1>
-                {@html issueData?.issueTitle}
+                {#if $isUltraMode}
+                    {@html issueData?.UltraissueTitle}
+                {:else}
+                    {@html issueData?.issueTitle}
+                {/if}
+                
             </h1>
 
             <p class="p2">
-                {@html issueData?.issueHeroText}
+                {#if $isUltraMode}
+                    {@html issueData?.UltraissueHeroText}
+                {:else}
+                    {@html issueData?.issueHeroText}
+                {/if}
             </p>
 
-            {#if issueData?.issuePrice }
+            {#if issueData?.issuePrice && !$isUltraMode}
                 <div class="buybuttons">
                     {#each [1, 2, 3] as _}
                         <BuyButtons on:toggle={handleSliderToggle} />
@@ -35,28 +45,11 @@
         </div>
         
         <div class="hero_img">
-            <img src={issueData?.issueThumbnail} alt={issueData?.issueNumber}>
-        </div>
-
-    </div>
-
-    <div class="base_grid hero_section ultra_appear">           
-        <div class="herotextcontainer"> 
-            <h1>
-                {issueData?.UltraissueTitle}
-            </h1>
-
-            <h3>
-                ../ {issueData?.issueNumber}_ULTRA
-            </h3>
-
-            <p class="p2">
-                {issueData?.UltraissueHeroText}
-            </p>
-        </div>
-        
-        <div class="heroimgcontainer">
-            <img class="heroimgcontainer" src={issueData?.UltraissueThumbnail}>
+            {#if $isUltraMode}
+                <img src={issueData?.UltraissueThumbnail} alt={issueData?.issueNumber}>
+            {:else}
+                <img src={issueData?.issueThumbnail} alt={issueData?.issueNumber}>
+            {/if}
         </div>
 
     </div>
