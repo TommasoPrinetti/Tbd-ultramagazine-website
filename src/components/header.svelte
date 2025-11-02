@@ -184,16 +184,16 @@
         {/if}
       {/each}
                         </div>
-      <div class="about_container vertical_flex">
-        <a onclick={() => navigateTo('/about')}>
+      <div class="about_container vertical_flex" onclick={() => navigateTo('/about')}>
+        <a >
           <h3>
               ABOUT
           </h3>
         </a>
       </div>
 
-      <div class="instagram_container vertical_flex">
-        <a onclick={() => navigateTo('https://www.instagram.com/tbd.ultramagazine/')} target="_blank" rel="noopener noreferrer">
+      <div class="instagram_container vertical_flex" onclick={() => window.location.href = 'https://www.instagram.com/tbd.ultramagazine/'}>
+        <a target="_blank" rel="noopener noreferrer">
                     <h3>
                       INSTAGRAM
                     </h3>
