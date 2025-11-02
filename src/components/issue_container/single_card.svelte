@@ -4,15 +4,15 @@ let { issueData } = $props();
 import { goto } from '$app/navigation';
 </script>
 
-<div class="card">
-    <button aria-label="Go to issue" onclick={() => goto(`/issues/${issueData?.issueTitle}`)}></button>
+<div class="card rounded_button" onclick={() => goto(`/issues/${issueData?.issueTitle}`)}>
+    <button aria-label="Go to issue" ></button>
     <div class="card_image_container">
       <img src={issueData?.issueCover} alt="">
     </div>
     <div class="card_text_container">
-      <h3>
+      <p class="p1" style="font-weight: 600;">
         {issueData?.issueTitle}
-      </h3>
+      </p>
       <p class="p3">
         {issueData?.issueHeroText}
       </p>
@@ -33,15 +33,21 @@ import { goto } from '$app/navigation';
   height: 240px;
   border: 1px solid var(--white-blue);
   border-radius: 15px;
-  box-sizing: border-box;
-  column-gap: var(--spacing-s);
+  column-gap: 0px;
   overflow: hidden;
+  padding: 0px;
+  margin: 0px;
+  cursor: pointer;
+  background-color: var(--black-white);
 }
 
 .card:hover {
   transform: translateY(-5%);
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   opacity: 100%;
+  color: var(--white-blue);
+  grid-column: span 8;
+  transition: grid-column 0.3s ease-in-out;
 }
 
 .card_image_container {
@@ -54,7 +60,6 @@ import { goto } from '$app/navigation';
 .card_image_container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 .card_text_container {
@@ -62,17 +67,16 @@ import { goto } from '$app/navigation';
   flex-direction: column;
   width: 65%;
   height: 100%;
-  padding-top: var(--spacing-m);
-  padding-bottom: var(--spacing-m);
+  padding: var(--spacing-m) var(--spacing-s);
   row-gap: var(--spacing-s);
   margin: 0;
-  padding-right: var(--spacing-s);
 }
 
 .card_text_container > .p3 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -98,9 +102,10 @@ import { goto } from '$app/navigation';
 
   .card_image_container {
     width: 30%;
-    height: auto;
+    height: 160px;
     overflow: hidden;
-    border-bottom: 1px solid white;
+    border: 0px;
+    border-right: 1px solid var(--white-blue);
   }
 
   .card_image_container img {

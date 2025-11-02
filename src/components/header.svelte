@@ -52,7 +52,7 @@
 
   let headerTopElement: HTMLElement | null = null;
   let headerLowerElement: HTMLElement | null = null;
-
+  console.log("temporaryCalls", temporaryCalls);
 
   onMount(() => {
     if (headerTopElement && headerLowerElement) {
@@ -103,7 +103,6 @@
 <header id={headerVar} class="vertical_flex">
     <a class="header_top"
     bind:this={headerTopElement}
-    href='https://www.liste.ch/en/home.html'
     target="_blank"
     rel="noopener noreferrer">
       <div class="banner">
@@ -187,12 +186,11 @@
                         </div>
       <div class="about_container vertical_flex">
         <a onclick={() => navigateTo('/about')}>
-                        <h3>
-                            ABOUT
-                        </h3>
-                    </a>
-        
-                </div>
+          <h3>
+              ABOUT
+          </h3>
+        </a>
+      </div>
 
       <div class="instagram_container vertical_flex">
         <a onclick={() => navigateTo('https://www.instagram.com/tbd.ultramagazine/')} target="_blank" rel="noopener noreferrer">
@@ -407,6 +405,11 @@ header {
     text-align: center;
     justify-content: center;
 }
+
+  .about_container:hover, .instagram_container:hover {
+    background-color: var(--white-blue);
+    color: var(--black-blue);
+  }
 
   .instagram_container {
     grid-column: span 12 / 17;

@@ -1,36 +1,31 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { isUltraMode } from '$lib/store';
-  import { slide } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
 
-  let isDefault = false;
-  let shouldAnimate = false;
-  let previousUltraMode = $isUltraMode;
+  let shouldAnimate = $state(false);
   let transitionBlock: HTMLDivElement | undefined;
+  let willUltra = $state(false);
 
-  // Watch for changes in isUltraMode
-  $: if ($isUltraMode !== previousUltraMode) {
+  $inspect("isUltraMode", $isUltraMode);
+
+  function toggleUltraMode() {
+    
+    willUltra = !willUltra;
     shouldAnimate = true;
-    previousUltraMode = $isUltraMode;
-    // Reset animation flag and transform after animation completes
+
+    setTimeout(() => {
+      $isUltraMode = !$isUltraMode;
+      updateBodyClass();
+    }, 1100);
+
     setTimeout(() => {
       shouldAnimate = false;
       if (transitionBlock) {
         transitionBlock.style.transform = 'translateX(-100%)';
       }
     }, 2200);
-  }
 
-  function toggleUltraMode() {
-    $isUltraMode = !$isUltraMode;
-    if ($isUltraMode) {
-      setTimeout(updateBodyClass, 1000);
-      isDefault = false;
-    } else {
-      setTimeout(updateBodyClass, 1000);
-      isDefault = true;
-    }
+    
   }
 
   const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
@@ -56,11 +51,11 @@
 
 
 <div class="ultrabutton_container">
-  <button class="rounded_button {$isUltraMode ? 'inactive' : 'active'}" onclick={toggleUltraMode}>
+  <button class="rounded_button {willUltra ? 'inactive' : 'active'}" onclick={toggleUltraMode}>
     <p class="p2" style="color: inherit">DEFAULT</p>
   </button>
 
-  <button class="rounded_button {$isUltraMode ? 'active' : 'inactive'}" onclick={toggleUltraMode}>
+  <button class="rounded_button {willUltra ? 'active' : 'inactive'}" onclick={toggleUltraMode}>
     <p class="p2" style="color: inherit">ULTRA</p>
   </button>
 </div>
