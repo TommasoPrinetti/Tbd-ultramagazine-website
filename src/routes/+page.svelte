@@ -26,6 +26,29 @@
         .replace(/^-+/, "")
         .replace(/-+$/, "");
     }
+
+    // Get current date string in Europe/Rome timezone for comparison (date only, no time)
+    function getEuropeDateString(): string {
+      const now = new Date();
+      return now.toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' }); // YYYY-MM-DD format
+    }
+
+    // Convert date to Europe/Rome timezone date string for comparison (date only)
+    function toEuropeDateString(date: Date): string {
+      return date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' });
+    }
+
+    // Check if call is open (current date >= openDate)
+    let isCallOpen = $derived.by(() => {
+      const call = data.temporaryCalls[0];
+      if (!call?.openDate) return true; // Show if no openDate is set
+      
+      const nowStr = getEuropeDateString();
+      const openDate = new Date(call.openDate);
+      const openStr = toEuropeDateString(openDate);
+      
+      return nowStr >= openStr;
+    });
 </script>
 
 <svelte:head>
@@ -47,24 +70,26 @@
   <LandHero />
   
   
-  <div class="temporary_call_container vertical_flex" id="LATEST">
-    <Divider category="temporary call" />
-    <h2>
-      {data.temporaryCalls[0]?.title}
-    </h2>
-  
-    <img src={data.temporaryCalls[0]?.image} alt="Last Issue">
-  
-    <div class="temporary_call_text">
-      <div class="vertical_flex" style="align-items: center; justify-content: center;">
-          <a class="rounded_button" style="z-index: 2;"
-          href={`/calls/${createSlug(data.temporaryCalls[0]?.title)}`}
-          data-sveltekit-preload>
-            <p class="p2">{data.temporaryCalls[0]?.ctaText}</p>
-          </a>
+  {#if isCallOpen && data.temporaryCalls[0]}
+    <div class="temporary_call_container vertical_flex" id="LATEST">
+      <Divider category="temporary call" />
+      <h2>
+        {data.temporaryCalls[0]?.title}
+      </h2>
+    
+      <img src={data.temporaryCalls[0]?.image} alt="Last Issue">
+    
+      <div class="temporary_call_text">
+        <div class="vertical_flex" style="align-items: center; justify-content: center;">
+            <a class="rounded_button" style="z-index: 2;"
+            href={`/calls/${createSlug(data.temporaryCalls[0]?.title)}`}
+            data-sveltekit-preload>
+              <p class="p2">{data.temporaryCalls[0]?.ctaText}</p>
+            </a>
+        </div>
       </div>
     </div>
-  </div>
+  {/if}
 
 
   <IssueContainer issuesData={data.issues}/>
