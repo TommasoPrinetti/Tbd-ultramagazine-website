@@ -1,6 +1,5 @@
 {
   "buildCommand": "npm run build",
-  "installCommand": "rm -rf node_modules package-lock.json && npm install",
-  "framework": "sveltekit",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ."
+  "installCommand": "rm -rf node_modules && npm install",
+  "framework": "sveltekit"
 }
