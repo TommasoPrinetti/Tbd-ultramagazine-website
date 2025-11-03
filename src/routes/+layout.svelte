@@ -130,6 +130,15 @@
         text-decoration: none;
     }
 
+    :global(p) {
+        white-space: pre-wrap;
+        hyphens: auto;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        word-break: break-word;
+    }
+
 
     @media screen and (max-width: 480px) {
         :global(.buybuttons) {

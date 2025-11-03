@@ -24,7 +24,6 @@
 
 body,
 html {
-  max-width: 1512px;
   width: 100%;
   overflow-x: hidden;
 }
@@ -344,12 +343,19 @@ h3 {
 }
 
 @media screen and (min-width: 1512px) {
+
+  html {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
   body {
     max-width: 1512px;
     align-items: center;
-    margin: auto;
+    margin: 0 auto;
     overflow-x: hidden;
     border: 0.5px solid var(--white-blue);
+    align-self: center;
   }
 
   header {
@@ -357,7 +363,7 @@ h3 {
   }
 
   .header_lower {
-    width: 1512px;
+    max-width: 1512px;
     align-self: center;
   }
 
@@ -369,5 +375,10 @@ h3 {
   .ultrawhiteblob {
     width: 100%;
     height: auto;
+  }
+
+  .slide_in_major {
+    max-width: 1512px;
+    align-self: center;
   }
 }
