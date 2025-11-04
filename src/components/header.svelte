@@ -74,20 +74,25 @@
           ISSUES
       </p>
     </a>
+    <a class="rounded_button" href="#SPECIALS">
+      <p class="p2"> 
+          SPECIAL_PROJECTS
+      </p>
+    </a>
     <a class="rounded_button" href="#ABOUT">
       <p class="p2"> 
           ABOUT
       </p>
     </a>
   {:else if type === 'ARTICLES' || type === 'ISSUES'}
-    <a class="rounded_button" href="#ISSUE">
+    <a class="rounded_button" style="border: 1px dashed" href="/">
       <p class="p2"> 
-          ISSUE
+          GO BACK
       </p>
     </a>
-    <a class="rounded_button" href="#ABSTRACT">
+    <a class="rounded_button" href="#EDITORIALE">
       <p class="p2"> 
-          ABSTRACT
+          EDITORIALE
       </p>
     </a>
     <a class="rounded_button" href="#ARTICLES">
@@ -96,28 +101,31 @@
       </p>
     </a>
   {:else if type === 'ABOUT'}
-    <!--- NOTHING --->
+  <a class="rounded_button" href="#ABOUT">
+    <p class="p2"> 
+        MANIFESTO
+    </p>
+  </a>
   {/if}
 {/snippet}
 
 <header id={headerVar} class="vertical_flex">
-    <a class="header_top"
+    <div class="header_top"
     bind:this={headerTopElement}
-    target="_blank"
-    rel="noopener noreferrer">
+    aria-label="Header banner">
       <div class="banner">
         <p class="p3"> 
           {@html repeatText}
         </p> 
       </div>
-    </a>
+    </div>
     
     <div class="header_lower" bind:this={headerLowerElement}>
         <div class="header_buttons_container">
           {@render header_buttons_container(headerVar)}
         </div>
 
-        <a onclick={() => navigateTo('/')} data-sveltekit-preload class="header_logo">
+        <a href="/" onclick={(e) => { e.preventDefault(); navigateTo('/'); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo('/'); } }} data-sveltekit-preload class="header_logo" role="button" tabindex="0">
             <img src={TbdLogo} alt="TBDLogoImage">
         </a>
 
@@ -134,7 +142,7 @@
       <div class="last_issue_container vertical_flex">
           <h3>{latestIssue?.issueTitle}</h3>
           <img src={latestIssue.issueCover} alt="Latest Issue">
-          <a class="rounded_button" onclick={() => navigateTo(latestIssue?.issueTitle || '')}>
+          <a class="rounded_button" href={latestIssue?.issueTitle ? `/issues/${latestIssue.issueTitle}` : '#'} onclick={(e) => { e.preventDefault(); navigateTo(latestIssue?.issueTitle || ''); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(latestIssue?.issueTitle || ''); } }} role="button" tabindex="0">
             <p class="p2">IS OUT NOW!</p>
           </a> 
       </div>
@@ -146,7 +154,7 @@
         
         {#each (issuesData || []) as issue}
         {#if issue.issueCategory === 'issues'}
-          <a onclick={() => navigateTo(issue.issueTitle)} data-sveltekit-preload class="link">  
+          <a href={`/issues/${issue.issueTitle}`} onclick={(e) => { e.preventDefault(); navigateTo(issue.issueTitle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(issue.issueTitle); } }} data-sveltekit-preload class="link" role="button" tabindex="0">  
             <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
                 → {issue.issueTitle}
             </p>
@@ -156,13 +164,13 @@
       </div>
       
       <div class="titles_container vertical_flex">
-        <a href="#PUBLICATIONS" onclick={() => navigateTo('#ISSUES')}>
-          <p class="p1" style="text-decoration: underline;">PUBLICATIONS</p>
+        <a href="#VOLUMES" onclick={() => navigateTo('#VOLUMES')}>
+          <p class="p1" style="text-decoration: underline;">VOLUMES</p>
         </a>
         
         {#each (issuesData || []) as publication}
         {#if publication.issueCategory === 'publications'}
-          <a onclick={() => navigateTo(publication.issueTitle)} data-sveltekit-preload class="link">
+          <a href={`/issues/${publication.issueTitle}`} onclick={(e) => { e.preventDefault(); navigateTo(publication.issueTitle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(publication.issueTitle); } }} data-sveltekit-preload class="link" role="button" tabindex="0">
             <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
                 → {publication.issueTitle}
             </p>
@@ -171,12 +179,12 @@
         {/each}
       </div>
       <div class="titles_container vertical_flex">
-        <a href="#SPECIAL_PROJECTS" onclick={() => navigateTo('#SPECIAL_PROJECTS')}>
-          <p class="p1" style="text-decoration: underline;">SPECIAL PROJECTS</p>
+        <a href="#SPECIALS" onclick={() => navigateTo('#SPECIALS')}>
+          <p class="p1" style="text-decoration: underline;">SPECIALS</p>
         </a>
         {#each issuesData as specialProject}
         {#if specialProject.issueCategory === 'special projects'}
-        <a onclick={() => navigateTo(specialProject.issueTitle)} data-sveltekit-preload class="link">
+        <a href={`/issues/${specialProject.issueTitle}`} onclick={(e) => { e.preventDefault(); navigateTo(specialProject.issueTitle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(specialProject.issueTitle); } }} data-sveltekit-preload class="link" role="button" tabindex="0">
           <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
               → {specialProject.issueTitle}
           </p>
@@ -184,14 +192,14 @@
         {/if}
       {/each}
                         </div>
-      <div class="about_container vertical_flex" onclick={() => navigateTo('/about')}>
-        <a >
+      <div class="about_container vertical_flex" onclick={() => navigateTo('/about')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { navigateTo('/about'); } }} role="button" tabindex="0" aria-label="Navigate to about page">
+        <a href="/about">
           <h3>
               ABOUT
           </h3>
         </a>
       </div>
-
+    <!--
       <div class="instagram_container vertical_flex" onclick={() => window.location.href = 'https://www.instagram.com/tbd.ultramagazine/'}>
         <a target="_blank" rel="noopener noreferrer">
                     <h3>
@@ -199,7 +207,7 @@
                     </h3>
                   </a>
                 
-            </div>
+            </div>-->
         </div>
 
     <div class="slide_footer vertical_flex">
@@ -401,22 +409,15 @@ header {
 
   .about_container {
     grid-column: span 12 / 17;
-    grid-row: 5;
+    grid-row: span 2;
     text-align: center;
     justify-content: center;
 }
 
-  .about_container:hover, .instagram_container:hover {
+  .about_container:hover {
     background-color: var(--white-blue);
     color: var(--black-blue);
   }
-
-  .instagram_container {
-    grid-column: span 12 / 17;
-    grid-row: 6;
-    text-align: center;
-    justify-content: center;
-}
 
   .footer_text_container {
   display: flex;
@@ -495,7 +496,7 @@ header {
       place-self: start;
     }
 
-    .about_container, .instagram_container {
+    .about_container {
       height: 20%;
       padding: var(--spacing-s);
     }

@@ -5,7 +5,7 @@
     import { isUltraMode } from '$lib/store';
 </script>
 
-<div id="ABSTRACT" class="base_grid cow_element "> 
+<div id="EDITORIALE" class="base_grid cow_element "> 
     <div class="cow_text">
         <p class="p2">
             {#if $isUltraMode}

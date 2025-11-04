@@ -3,7 +3,7 @@
 
 </script>
 
-<div class="manifesto base_grid" id="ABSTRACT">
+<div class="manifesto base_grid" id="EDITORIALE">
         <h2>
             {manifestoTitle}
         </h2>

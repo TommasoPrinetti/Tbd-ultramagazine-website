@@ -4,8 +4,8 @@ let { issueData } = $props();
 import { goto } from '$app/navigation';
 </script>
 
-<div class="card rounded_button" onclick={() => goto(`/issues/${issueData?.issueTitle}`)}>
-    <button aria-label="Go to issue" ></button>
+<div class="card rounded_button" onclick={() => goto(`/issues/${issueData?.issueTitle}`)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { goto(`/issues/${issueData?.issueTitle}`); } }} role="button" tabindex="0" aria-label={`Navigate to issue: ${issueData?.issueTitle}`}>
+    <button aria-label="Go to issue" style="display: none;"></button>
     <div class="card_image_container">
       <img src={issueData?.issueCover} alt="">
     </div>
@@ -79,6 +79,7 @@ import { goto } from '$app/navigation';
   line-clamp: 5;
   overflow: hidden;
   text-overflow: ellipsis;
+  hyphens: none;
 }
 
 @media screen and (max-width: 480px) {

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
     let { galleryFolderPath } = $props();
     let lengthNumber = $state(0);
@@ -10,7 +10,7 @@
         currentImageIndex = (currentImageIndex % lengthNumber) + 1;
     }
 
-    function preloadImage(index) {
+    function preloadImage(index: number) {
         const img = new Image();
         img.onload = () => {
             lengthNumber = index;
@@ -34,12 +34,12 @@
 {#if galleryFolderPath}
         <section class="gallery">
             {#each Array.from({ length: lengthNumber }, (_, i) => i + 1) as imageIndex}
-                <a id={`image${imageIndex}`} class:current={currentImageIndex === imageIndex} onclick={cycleImages}>
+                <button id={`image${imageIndex}`} class:current={currentImageIndex === imageIndex} onclick={cycleImages} aria-label={`View image ${imageIndex}`} type="button" style="border: none; background: none; padding: 0; cursor: pointer;">
                     <img src={`${galleryFolderPath}/GALLERY_${imageIndex}.webp`} alt={`GALLERY_${imageIndex}`}>
-                </a>
+                </button>
             {/each}
         </section>
-        <div class="switch_container" onclick={cycleImages}>
+        <div class="switch_container" onclick={cycleImages} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { cycleImages(); } }} role="button" tabindex="0" aria-label="Next image">
             <p class="p1">NEXT →</p>
         </div>
 {/if}

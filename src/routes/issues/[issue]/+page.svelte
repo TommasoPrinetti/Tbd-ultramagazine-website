@@ -22,8 +22,8 @@
       temporaryCalls = data?.temporaryCalls || [];
     });
 
-    $inspect("📄 Page data:", issue);
-    $inspect("📄 Issue Title:", issues);
+    //$inspect("📄 Page data:", issue);
+    //$inspect("📄 Issue Title:", issues);
 
     let sectionNames = $derived(
       issue?.articles && Array.isArray(issue.articles)
@@ -90,7 +90,7 @@
         {/if}
       {:else if issue?.layoutOption === 'Manifesto'}
         {#if issue?.manifestoTitle}
-          <Manifesto {...issue} id="ABSTRACT" />
+          <Manifesto {...issue} id="EDITORIALE" />
         {/if}
 
       {:else if issue?.layoutOption === 'Ibrido'}
@@ -100,7 +100,7 @@
             <MagGallery images={issue.galleryImages} />
           {/if}
         {#if issue?.manifestoTitle}
-          <Manifesto {...issue} id="ABSTRACT" />
+          <Manifesto {...issue} id="EDITORIALE" />
         {/if}
         {#if issue?.CowElementText}
           <CowElement issueData={issue} />
@@ -112,28 +112,28 @@
     <div class="video_gallery ">
           <div class="single_video" id="video_#1">
               <div style="padding:100% 0 0 0;position:relative;">
-                  <iframe src="https://player.vimeo.com/video/637629288?h=66b3ae91f8" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                  <iframe src="https://player.vimeo.com/video/637629288?h=66b3ae91f8" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Vimeo video player 1">
                   </iframe>
               </div>
               <script src="https://player.vimeo.com/api/player.js"></script>
           </div>
           <div class="single_video" id="video_#2">
               <div style="padding:100% 0 0 0;position:relative;">
-                  <iframe src="https://player.vimeo.com/video/637612946?h=13fe136ba9" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                  <iframe src="https://player.vimeo.com/video/637612946?h=13fe136ba9" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Vimeo video player 2">
                   </iframe>
               </div>
               <script src="https://player.vimeo.com/api/player.js"></script>
           </div>
           <div class="single_video" id="video_#3">
               <div style="padding:100% 0 0 0;position:relative;">
-                  <iframe src="https://player.vimeo.com/video/637618840?h=94b5d22c38" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                  <iframe src="https://player.vimeo.com/video/637618840?h=94b5d22c38" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Vimeo video player 3">
                   </iframe>
               </div>
               <script src="https://player.vimeo.com/api/player.js"></script>
           </div>
           <div class="single_video" id="video_#4">
               <div style="padding:100% 0 0 0;position:relative;">
-                  <iframe src="https://player.vimeo.com/video/637623042?h=365c31a28b" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                  <iframe src="https://player.vimeo.com/video/637623042?h=365c31a28b" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Vimeo video player 4">
                   </iframe>
               </div>
               <script src="https://player.vimeo.com/api/player.js"></script>
@@ -202,7 +202,7 @@
 }
 
 iframe {
-  frameborder: 0;
+  border: 0;
 }
 
 :global(iframe.footer) {
@@ -244,10 +244,6 @@ iframe {
     width: 700px;
   }
 
-  iframe.footer {
-    width: 100%;
-    height: 200px;
-  }
 
   .section_name {
     padding: var(--spacing-s);

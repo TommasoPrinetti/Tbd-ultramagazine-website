@@ -48,7 +48,7 @@
                 <div class="index_container vertical_flex">
                     <div class="vertical_flex">
                         {#each relatedArticles as relatedArticle, index}
-                            <a data-sveltekit-preload-data onclick={() => navigateToArticle(relatedArticle)} data-sveltekit-reload aria-roledescription="Navigate to article">
+                            <a href={`/issues/${relatedArticle.parentIssue}/articles/${relatedArticle.articleName}`} data-sveltekit-preload-data onclick={(e) => { e.preventDefault(); navigateToArticle(relatedArticle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateToArticle(relatedArticle); } }} data-sveltekit-reload role="button" tabindex="0" aria-label={`Navigate to article: ${relatedArticle.articleTitle}`}>
                                 <p class="p3">#{0}{index+1}: {@html relatedArticle.articleTitle}</p>
                             </a>
                         {/each}

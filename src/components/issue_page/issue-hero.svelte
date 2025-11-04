@@ -15,7 +15,7 @@
   
 </script>
 
-    <div id="ISSUE" class="base_grid hero_section" >          
+    <div id="EDITORIALE" class="base_grid hero_section" >          
         <div class="hero_text vertical_flex"> 
             <h1>
                 {#if $isUltraMode}

@@ -37,6 +37,7 @@ article {
 
 article h2 {
   text-transform: uppercase;
+  hyphens: none;
 }
 
 .article_img_container {

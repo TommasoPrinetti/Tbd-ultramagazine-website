@@ -28,8 +28,8 @@
 <!-- Publications -->
 <div class="vertical_flex">
   {#if publications.length > 0}
-  <Divider category="publications" />
-    <div class="issues_container" id="PUBLICATIONS">
+  <Divider category="volumes" />
+    <div class="issues_container" id="VOLUMES">
       <div class="base_grid">
         {#each publications as issue (issue.issueTitle)}
           <SingleIssue issueData={issue} />
@@ -42,7 +42,7 @@
 <div class="vertical_flex">
   {#if specialProjects.length > 0}
   <Divider category="special projects" />
-    <div class="issues_container" id="SPECIAL_PROJECTS">
+    <div class="issues_container" id="SPECIALS">
       <div class="base_grid">
         {#each specialProjects as issue (issue.issueTitle)}
           <SingleCard issueData={issue} />

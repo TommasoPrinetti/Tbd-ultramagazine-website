@@ -94,7 +94,7 @@
 
   <IssueContainer issuesData={data.issues}/>
 
-    <section id="ABOUT"class="about ">
+    <section id="ABOUT"class="about">
       <div class="about_text_container">
         <h1>
           ABOUT

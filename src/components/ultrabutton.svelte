@@ -6,7 +6,7 @@
   let transitionBlock: HTMLDivElement | undefined;
   let willUltra = $state(false);
 
-  $inspect("isUltraMode", $isUltraMode);
+  //$inspect("isUltraMode", $isUltraMode);
 
   function toggleUltraMode() {
     
@@ -129,6 +129,7 @@
   pointer-events: none;
   transform: translateX(-100%);
   transition: all 0.2s ease-in-out;
+  border: 2px solid var(--white-white);
 }
 
 .transition_block.animate {

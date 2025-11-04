@@ -6,7 +6,7 @@
   import { goto } from '$app/navigation';
 </script>
 
-<a class="single_issue" onclick={() => goto(`/issues/${issueData?.issueTitle}`)}>
+<a class="single_issue" href={`/issues/${issueData?.issueTitle}`} onclick={(e) => { e.preventDefault(); goto(`/issues/${issueData?.issueTitle}`); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goto(`/issues/${issueData?.issueTitle}`); } }} role="button" tabindex="0" aria-label={`Navigate to issue: ${issueData?.issueTitle}`}>
 
     {#if issueData?.ultraHoverImg}
       <div class="single_issue_ultrahover">

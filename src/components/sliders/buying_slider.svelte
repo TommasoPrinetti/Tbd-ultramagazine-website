@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { tick } from 'svelte';
     import { headerHeight } from '$lib/store';
   
     let { 
@@ -10,16 +10,14 @@
     const spedTracciata = 7
     
     let globalCost = $derived((issueData?.issuePrice || 0) + spedTracciata);
+    let paypalButtonContainer = $state<HTMLDivElement | null>(null);
+    let paypalButtonsInstance: any = null;
+    let isInitialized = $state(false);
+    let currentIssuePrice = $state<string | number | undefined>(undefined);
   
     function closeSlider() {
       isSliderOpen = false;
     }
-  
-    onMount(() => {
-      loadPaypalSdk().then(() => {
-        initPayPalButton();
-      });
-    });
   
     async function loadPaypalSdk() {
       if (!window.paypal) {
@@ -33,18 +31,41 @@
       }
     }
   
-    function initPayPalButton() {
-      if (window.paypal) {
-        window.paypal.Buttons({
+    async function initPayPalButton() {
+      // Wait for the element to exist
+      if (!paypalButtonContainer) {
+        await tick();
+        paypalButtonContainer = document.getElementById('paypal-button-container') as HTMLDivElement;
+      }
+
+      // Check if element exists and PayPal SDK is loaded
+      if (!paypalButtonContainer) {
+        console.warn('PayPal button container not found');
+        return;
+      }
+
+      if (!window.paypal) {
+        console.error('PayPal SDK not loaded!');
+        return;
+      }
+
+      // Clear any existing PayPal buttons
+      if (paypalButtonContainer.children.length > 0) {
+        paypalButtonContainer.innerHTML = '';
+      }
+
+      // Initialize PayPal buttons
+      try {
+        paypalButtonsInstance = window.paypal.Buttons({
           style: {
             shape: 'pill',
             color: 'black',
             layout: 'vertical',
             label: 'buynow',
           },
-          createOrder: function(data, actions) {
-            const selectedItemDescription = `TBD Magazine - Issue ${issueData.issueTitle} - SPED. GRATUITA`;
-            const selectedItemPrice = issueData.issuePrice;
+          createOrder: function(data: any, actions: any) {
+            const selectedItemDescription = `TBD Magazine - Issue ${issueData?.issueTitle} - SPED. GRATUITA`;
+            const selectedItemPrice = issueData?.issuePrice;
             const shipping = 0;
             const tax = 0;
             const quantity = 1;
@@ -81,20 +102,47 @@
               }]
             });
           },
-          onApprove: function(data, actions) {
-            return actions.order.capture().then(function(orderData) {
-              const element = document.getElementById('paypal-button-container');
-              element.innerHTML = '<h3>Thank you for your purchase!</h3>';
+          onApprove: function(data: any, actions: any) {
+            return actions.order.capture().then(function(orderData: any) {
+              if (paypalButtonContainer) {
+                paypalButtonContainer.innerHTML = '<h3>Thank you for your purchase!</h3>';
+              }
             });
           },
-          onError: function(err) {
+          onError: function(err: any) {
             console.error('PayPal Button Error:', err);
           },
-        }).render('#paypal-button-container');
-      } else {
-        console.error('PayPal SDK not loaded!');
+        });
+        
+        paypalButtonsInstance.render(paypalButtonContainer);
+        isInitialized = true;
+        currentIssuePrice = issueData?.issuePrice;
+      } catch (error) {
+        console.error('Error rendering PayPal buttons:', error);
       }
     }
+
+    // Watch for when issueData becomes available and initialize PayPal
+    $effect(() => {
+      if (issueData?.issuePrice && paypalButtonContainer && !isInitialized) {
+        loadPaypalSdk().then(async () => {
+          await tick(); // Wait for DOM to update
+          await initPayPalButton();
+        });
+      }
+    });
+
+    // Re-initialize when issueData.issuePrice changes
+    $effect(() => {
+      if (issueData?.issuePrice && paypalButtonContainer && currentIssuePrice !== undefined && currentIssuePrice !== issueData?.issuePrice) {
+        // Reset initialization flag when issue changes
+        isInitialized = false;
+        loadPaypalSdk().then(async () => {
+          await tick();
+          await initPayPalButton();
+        });
+      }
+    });
   </script>
 
 {#if issueData?.issuePrice}
@@ -117,15 +165,15 @@
                     <div class="Title_drop_container">
                         <p class="p1">PRE ORDER ISSUE {issueData?.issueTitle}</p>
                     <select id="item-options">
-                        <option value="{issueData?.issueTitle} - SPED. GRATUITA" price={issueData?.issuePrice}>SPED. GRATUITA - {issueData?.issuePrice} EUR</option>
-                        <option value="{issueData?.issueTitle} - SPED. ESPRESSA (TRACCIATA)" price={globalCost}>SPED. ESPRESSA (TRACCIATA) - {globalCost} EUR</option>
+                        <option value="{issueData?.issueTitle} - SPED. GRATUITA" data-price={issueData?.issuePrice}>SPED. GRATUITA - {issueData?.issuePrice} EUR</option>
+                        <option value="{issueData?.issueTitle} - SPED. ESPRESSA (TRACCIATA)" data-price={globalCost}>SPED. ESPRESSA (TRACCIATA) - {globalCost} EUR</option>
                     </select>
                     <select style="visibility: hidden" id="quantitySelect">
 
                     </select>   
                 </div>
 
-                <div id="paypal-button-container">
+                <div id="paypal-button-container" bind:this={paypalButtonContainer}>
                 </div>
                 
             </div>

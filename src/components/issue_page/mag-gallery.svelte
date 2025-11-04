@@ -13,7 +13,7 @@
 {#if images}
   {#if images.length > 0}
     <div class="gallery">
-        <h2>CLICK ME</h2>
+        <h2>PREVIEW</h2>
         <section>
             {#each images as image, index}
                 <button id={`image${index + 1}`} onclick={cycleImages} class:current={currentImageIndex === index}>
