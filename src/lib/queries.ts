@@ -5,6 +5,7 @@ import groq from "groq";
 // Articles are included as nested objects with section, thumbnail, title, description
 export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
   _id,
+  showPage,
   isLatestIssue,
   issueTitle,
   issueHeroText,
@@ -73,6 +74,7 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
 // Query to get all Temporary Calls
 export const allTemporaryCallsQuery = groq`*[_type == "temporaryCall"] | order(_createdAt desc) {
   _id,
+  showPage,
   _createdAt,
   title,
   image{

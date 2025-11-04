@@ -70,7 +70,7 @@
   <LandHero />
   
   
-  {#if isCallOpen && data.temporaryCalls[0]}
+  {#if isCallOpen && data.temporaryCalls[0] && data.temporaryCalls[0]?.showPage}
     <div class="temporary_call_container vertical_flex" id="LATEST">
       <Divider category="temporary call" />
       <h2>
