@@ -61,14 +61,17 @@
 
     :global(.rounded_button > p) {
         color: var(--white-white);
+        white-space: nowrap;
     }
 
     :global(.rounded_button:hover) {
         background-color: var(--white-white);
+        white-space: nowrap;
     }
 
     :global(.rounded_button:hover > p) {
         color: var(--black-blue);
+        white-space: nowrap;
     }
 
 

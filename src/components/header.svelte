@@ -76,7 +76,7 @@
     </a>
     <a class="rounded_button" href="#SPECIALS">
       <p class="p2"> 
-          SPECIAL_PROJECTS
+          SPECIALS
       </p>
     </a>
     <a class="rounded_button" href="#ABOUT">
