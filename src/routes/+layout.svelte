@@ -64,8 +64,11 @@
     }
 
     :global(.rounded_button:hover) {
-        color: var(--black-white);
-        background-color: var(--white-blue);
+        background-color: var(--white-white);
+    }
+
+    :global(.rounded_button:hover > p) {
+        color: var(--black-blue);
     }
 
 

@@ -91,11 +91,13 @@
         <p class="p2">
             {@html call?.description}
         </p>
-        <a href={call?.hrefExternal} class="rounded_button">
-            <p class="p2">
-                Download the call
-            </p>
-        </a>
+        {#if call?.downloadPdfUrl}
+          <a href={call?.downloadPdfUrl} class="rounded_button">
+              <p class="p2">
+                  Download the call
+              </p>
+          </a>
+        {/if}
     </div>
 
     <Footer />
