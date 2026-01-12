@@ -1,51 +1,25 @@
 <script>
-    // article_corpus.svelte
     import { tick } from 'svelte';
     import { goto } from '$app/navigation';
     
-    import articlesData from '$lib/articles_new.json';
-    import issuesData from '$lib/issues_new.json';
-
     import BuyButtons from "$components/buy_buttons.svelte";
     import BuyingSlider from "$components/sliders/buying_slider.svelte";
     import ArticleGallery from "./article_gallery.svelte";
-    import ArticleImg from "./article_img.svelte";
-
-    $: relatedArticles = [];
-    $: rowsDidascalie = [];
-    $: rowsBibliografie = [];
-    $: currentIssueData = {};
-    $: isSliderOpen = false;
-
-    $: reloadStatus = false;
 
     const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
 
-    export let article;
-    
-    // Derived properties for easier access
-    let {articleTitle, showDidascalie, showBibliografia, autore, note_autore, parentIssue, issueNumber, bibliografie, didascalie, articleContent } = article;
+    let { article, issuesData, articlesData } = $props();
 
-    $: if (article) {
-    ({ articleTitle, showDidascalie, showBibliografia, autore, note_autore, parentIssue, issueNumber, bibliografie, didascalie, articleContent } = article);
-    }
+    let isSliderOpen = $state(false);
+    let reloadStatus = $state(false);
 
-    $: if (article) {
-        ({ articleTitle, showDidascalie, showBibliografia, autore, note_autore, parentIssue, issueNumber, bibliografie, didascalie, articleContent } = article);
+    let relatedArticles = $derived(article ? articlesData.filter(a => a.parentIssue === article.parentIssue && a.articleName !== article.articleName) : []);
 
-        relatedArticles = articlesData.filter(a => a.parentIssue === parentIssue && a.articleName !== articleTitle); 
-        currentIssueData = issuesData.find(issue => String(issue.issueNumber) === String(article.parentIssue));
+    let currentIssueData = $derived(article ? issuesData.find(issue => String(issue.issueTitle) === String(article.parentIssue)) || {} : {});
 
-        if (didascalie) {
-            rowsDidascalie = didascalie.split('*').filter(Boolean);
-        }
-        
-        if (bibliografie) {
-            rowsBibliografie = bibliografie.split('*').filter(Boolean);
-        }
-    }
+    let rowsDidascalie = $derived(article?.didascalie && typeof article.didascalie === 'string' ? article.didascalie.split('*').filter(Boolean) : []);
 
-    // console.log("Looking for issueNumber:", currentIssueData);
+    let rowsBibliografie = $derived(article?.bibliografie && typeof article.bibliografie === 'string' ? article.bibliografie.split('*').filter(Boolean) : []);
 
     function navigateToArticle(relatedArticle) {
         const url = `../../../issues/${relatedArticle.parentIssue}/articles/${relatedArticle.articleName}`;
@@ -65,123 +39,228 @@
 
     function handleSliderToggle() {
         isSliderOpen = !isSliderOpen;
-        // console.log("PREMUTO", isSliderOpen)
-    }
-
-    function closeSlider() {
-      isSliderOpen = false;
-      console.log("Slider is closed:",isSliderOpen )
     }
 
 </script>
 
-<article_2>
-    <section>
-            <div class="side_menu">
-                <div class="index_container">
-                    <div class="index">
-                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="base_grid article_corpus">
+            <div class="side_menu vertical_flex">
+                <div class="index_container vertical_flex">
+                    <div class="vertical_flex">
                         {#each relatedArticles as relatedArticle, index}
-                            <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <!-- svelte-ignore a11y-no-static-element-interactions -->
-                            <!-- svelte-ignore a11y-missing-attribute -->
-                            <a data-sveltekit-preload-data on:click={() => navigateToArticle(relatedArticle)} style="cursor: pointer;" data-sveltekit-reload>
-                                <p3>#{0}{index+1}: {@html relatedArticle.articleTitle}</p3>
+                            <a href={`/issues/${relatedArticle.parentIssue}/articles/${relatedArticle.articleName}`} data-sveltekit-preload-data onclick={(e) => { e.preventDefault(); navigateToArticle(relatedArticle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateToArticle(relatedArticle); } }} data-sveltekit-reload role="button" tabindex="0" aria-label={`Navigate to article: ${relatedArticle.articleTitle}`}>
+                                <p class="p3">#{0}{index+1}: {@html relatedArticle.articleTitle}</p>
                             </a>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 1">
-                                <path d="M0 0.555664H330"/>
-                            </svg>
                         {/each}
                     </div>
 
                     <div class="buybuttons">
                         {#each [1, 2, 3] as _}
-                            <BuyButtons on:toggle={handleSliderToggle} />
+                            <BuyButtons onclick={handleSliderToggle} />
                         {/each} 
                     </div>
                 </div>
                 
-                    <img src={TbdLogo} alt="">
-                        <div class="index_container">
-                            <div class="index">
-                                <p3>
-                                    <!-- Parte di: --> <span> <d2 style="font-style: italic;">TBD {parentIssue} </d2></span>
-                                </p3>
+                <img src={TbdLogo} alt="">
+                    <div class="index_container vertical_flex">
+                        <div class="vertical_flex">
+                            <p class="p3">
+                                <span> <span class="d2" style="font-style: italic;">TBD {article?.parentIssue} </span></span>
+                            </p>
 
-                                <p3>
-                                    <!-- Scritto da: --> <span> <d2 style="font-style: italic;">{autore}</d2></span>
-                                </p3>
+                            <p class="p3">
+                                <span> <span class="d2" style="font-style: italic;">{article?.autore}</span></span>
+                            </p>
 
-                                <p3>
-                                    <!-- Editing di: --> <span> <d2 style="font-style: italic;">{note_autore} </d2></span>
-                                </p3>
-                            </div>
+                            <p class="p3">
+                                <span> <span class="d2" style="font-style: italic;">{article?.note_autore} </span></span>
+                            </p>
                         </div>
+                    </div>
             </div>
 
-        <read id="READ">
-            <div style="display: flex; flex-direction: column; gap: var(--spacing_s);">
+        <article class="read" id="READ">
+            <div style="display: flex; flex-direction: column; gap: var(--spacing-s);">
                 <h2>
-                    {articleTitle}
+                    {article?.articleTitle}
                 </h2>
 
-                {#each Object.keys(articleContent) as key (key)}
-                    {#if key.startsWith('p') && articleContent[key]}
-                        <!-- Render each line of the paragraph separately with <p> tags -->
-                        {#each articleContent[key].split('\n') as line}
-                            <p2>{@html line}</p2>
+                {#each Object.keys(article?.articleContent) as key (key)}
+                    {#if key.startsWith('p') && article?.articleContent[key]}
+                        {#each article?.articleContent[key].split('\n') as line}
+                            <p class="p2">{@html line}</p>
                         {/each}
-                    {:else if key.startsWith('img') && articleContent[key]}
-                        <!-- Render an image -->
-                        <ArticleImg imagePath={articleContent[key]} />
-                    {:else if key.startsWith('gallery') && articleContent[key]}
-                        <!-- Render a gallery -->
-                        <ArticleGallery galleryFolderPath={articleContent[key]}/>
+                    {:else if key.startsWith('img') && article?.articleContent[key]}
+                            <img src={article?.articleContent[key]} alt=""/>
+                    {:else if key.startsWith('gallery') && article?.articleContent[key]}
+                        <ArticleGallery galleryFolderPath={article?.articleContent[key]}/>
                     {/if}
                 {/each}
                 
             </div>
             
-                <d2>
-                    {#if showDidascalie}
-                        <span style="font-weight: 800;">Didascalie:</span>
-                        <br>
-                        <br>
-                        {#each rowsDidascalie as didascalia, index}
-                            <p>[{index + 1}] {@html didascalia}</p>
-                        {/each}
-                    {/if}
-                </d2>
-                
-                <d2>
-                    {#if showBibliografia}
-                        <span style="font-weight: 800;">Bibliografia:</span>
-                        <br>
-                        <br>
-                        {#each rowsBibliografie as bibliografia}
-                            <p>● {@html bibliografia}</p>
-                        {/each}
-                    {/if}
-                </d2>
-
+            <div class="vertical_flex">
+                {#if article?.showDidascalie}
+                    <span style="font-weight: 800;">Didascalie:</span>
+                    {#each rowsDidascalie as didascalia, index}
+                        <p class="d2">[{index + 1}] {didascalia}</p>
+                    {/each}
+                {/if}
+            </div>
             
-
-        </read>
-    </section>
-</article_2>
-
+            <div class="vertical_flex">
+                {#if article?.showBibliografia && rowsBibliografie}
+                    <span style="font-weight: 800;">Bibliografia:</span>
+                    {#each rowsBibliografie as bibliografia}
+                        <p class="d2">● {bibliografia}</p>
+                    {/each}
+                {/if}
+            </div>
+        </article>
+    </div>
 
 <BuyingSlider
-{isSliderOpen}
-issueCover={currentIssueData.issueCover}
-issuePrice={currentIssueData.issuePrice}
-{issueNumber} />
+    bind:isSliderOpen
+    issueCover={currentIssueData.issueCover}
+    issuePrice={currentIssueData.issuePrice}
+    issueTitle={article?.issueTitle}
+/>
 
 
 <style>
-    d2 > p {
-        margin: 0px;
-        padding: 0px;
+
+.read {
+  grid-column: span 10;
+  height: auto;
+  padding-top: var(--spacing-m);
+  margin-bottom: var(--spacing_zero);
+  padding-bottom: var(--spacing-s);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--spacing-m);
+  overflow: visible;
+}
+
+.read .p2,
+.d2 {
+  hyphens: auto;
+}
+.read h2 {
+  text-transform: uppercase;
+}
+
+.read img {
+  width: 60%;
+  height: auto;
+  border-color: white;
+  border: 1px solid white;
+  border-radius: 2px;
+  box-sizing: border-box;
+  align-self: center;
+}
+
+.article_corpus {
+  padding: 0px var(--spacing-l);
+  border-top: solid var(--white-blue) 2px;
+  border-bottom: solid var(--white-blue) 2px;
+  height: fit-content;
+  position: relative;
+}
+
+.side_menu {
+  grid-column: span 4;
+  padding: var(--spacing-m) 0px;
+
+  position: sticky;
+  top: 120px;
+
+  height: fit-content;
+  overflow: hidden;
+}
+
+.side_menu img {
+  width: 50%;
+}
+
+.index_container {
+  padding: var(--Spacing_Zero, 0px);
+  row-gap: var(--spacing-m);
+  height: 100%;
+  position: relative;
+}
+
+.index .p3 {
+  text-transform: uppercase;
+  width: 90%;
+}
+
+.index .p3:hover {
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.index svg {
+  display: none;
+  width: "130";
+  height: "2";
+  fill: "none";
+}
+
+@media screen and (max-width: 480px) {
+    .read {
+        grid-column: span 2;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-m);
+        overflow-x: hidden;
     }
+
+    .read img {
+        width: 100%;
+        height: auto;
+        border-color: white;
+        border: 0, 5px solid white;
+        border-radius: 1px;
+        box-sizing: border-box;
+    }
+
+    .article_2 {
+        grid-template-columns: repeat(2, 1fr);
+        display: flex;
+        flex-direction: column-reverse;
+
+        border-top-width: 0px;
+
+        margin-top: 0;
+        gap: var(--spacing-s);
+        height: fit-content;
+    }
+
+    .index_container {
+        margin-bottom: var(--spacing-s);
+        height: auto;
+    }
+
+    .index {
+        gap: var(--spacing-xs);
+    }
+
+    .index svg {
+        display: block;
+    }
+
+    .side_menu {
+        display: flex;
+        padding-bottom: 0;
+        justify-content: flex-start;
+        height: fit-content;
+    }
+
+    .side_menu img {
+        width: 100%;
+    }
+}
 
 </style>
