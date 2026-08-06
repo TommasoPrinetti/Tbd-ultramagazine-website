@@ -133,6 +133,7 @@
   }
 
   onMount(() => {
+    document.body.classList.add('radio-route');
     loadScript('https://www.youtube.com/iframe_api', 'youtube-api');
     window.onYouTubeIframeAPIReady = () => {
       youtubePlayer = new window.YT.Player('youtube-player', {
@@ -187,8 +188,6 @@
   <title>TBD Radio</title>
   <meta name="description" content="TBD Ultramagazine audiovisual radio" />
 </svelte:head>
-
-<svelte:body class:radio-route />
 
 <main class:concealed={youtubeVisible && !showControls} class="controls" aria-label="Audio tracks">
   {#each tracks as _, index}
