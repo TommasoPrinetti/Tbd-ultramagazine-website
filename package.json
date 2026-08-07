@@ -18,5 +18,8 @@
 	"dependencies": {
 		"@vercel/analytics": "^1.2.2",
 		"exceljs": "^4.4.0"
+	},
+	"engines": {
+		"node": "20.x"
 	}
 }
