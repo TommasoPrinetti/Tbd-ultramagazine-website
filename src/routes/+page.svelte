@@ -11,7 +11,7 @@
 
     const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
 
-    let { data } = $props();
+    let { data }: any = $props();
 
     console.log("📄 Temporary Calls:", data.temporaryCalls);
 
@@ -37,6 +37,16 @@
     function toEuropeDateString(date: Date): string {
       return date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' });
     }
+
+    // Homepage promo gate: siteSettings.promoFeature.enabled wins when the
+    // singleton exists; otherwise fall back to the per-call promoEnabled flag
+    // (absent flag = visible, preserving current Studio docs).
+    let isPromoEnabled = $derived.by(() => {
+      if (data.homepagePromo && typeof data.homepagePromo.enabled === "boolean") {
+        return data.homepagePromo.enabled;
+      }
+      return data.temporaryCalls[0]?.promoEnabled !== false;
+    });
 
     // Check if call is open (current date >= openDate)
     let isCallOpen = $derived.by(() => {
@@ -66,11 +76,11 @@
   <meta property="og:image:height" content="627" />
 </svelte:head>
 
-  <Header issuesData={data.issues} temporaryCalls={data.temporaryCalls}/>
+  <Header issuesData={data.issues} temporaryCalls={data.temporaryCalls} topBanner={data.topBanner}/>
   <LandHero />
   
   
-  {#if isCallOpen && data.temporaryCalls[0] && data.temporaryCalls[0]?.showPage}
+  {#if isPromoEnabled && isCallOpen && data.temporaryCalls[0] && data.temporaryCalls[0]?.showPage}
     <div class="temporary_call_container vertical_flex" id="LATEST">
       <Divider category="temporary call" />
       <h2>

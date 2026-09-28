@@ -8,7 +8,7 @@
 
   const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
 
-  let { headerVar = 'COMMON', issuesData, temporaryCalls } = $props();
+  let { headerVar = 'COMMON', issuesData, temporaryCalls, topBanner = null } = $props();
   
   const latestIssue = (issuesData?.find((issue: any) => issue.isLatestIssue === true));
 
@@ -42,7 +42,16 @@
     $isMenuOpen = !$isMenuOpen;
   }
 
-  let repeatText = $derived(` © TBD ULTRAMAGAZINE - ${temporaryCalls[0]?.title} - `.repeat(100));
+  // Top banner: prefer siteSettings.topBanner, fall back to temporaryCalls[0].
+  // `enabled:false` hides the strip; `url` makes it a link, otherwise a div.
+  let bannerEnabled = $derived(topBanner?.enabled ?? temporaryCalls?.[0]?.bannerEnabled ?? true);
+  let bannerText = $derived(
+    topBanner?.text ??
+    temporaryCalls?.[0]?.bannerText ??
+    ` © TBD ULTRAMAGAZINE - ${temporaryCalls?.[0]?.title ?? ""} - `
+  );
+  let bannerUrl = $derived(topBanner?.url ?? temporaryCalls?.[0]?.bannerUrl ?? null);
+  let repeatText = $derived(`${bannerText} `.repeat(100).trimStart());
 
   afterNavigate(() => {
     if ($isMenuOpen) {
@@ -110,15 +119,32 @@
 {/snippet}
 
 <header id={headerVar} class="vertical_flex">
+  {#if bannerEnabled}
+    {#if bannerUrl}
+    <a class="header_top"
+    bind:this={headerTopElement}
+    href={bannerUrl}
+    target={bannerUrl.startsWith("/") ? undefined : "_blank"}
+    rel={bannerUrl.startsWith("/") ? undefined : "noopener noreferrer"}
+    aria-label="Header banner">
+      <div class="banner">
+        <p class="p3">
+          {@html repeatText}
+        </p>
+      </div>
+    </a>
+    {:else}
     <div class="header_top"
     bind:this={headerTopElement}
     aria-label="Header banner">
       <div class="banner">
-        <p class="p3"> 
+        <p class="p3">
           {@html repeatText}
-        </p> 
+        </p>
       </div>
     </div>
+    {/if}
+  {/if}
     
     <div class="header_lower" bind:this={headerLowerElement}>
         <div class="header_buttons_container">

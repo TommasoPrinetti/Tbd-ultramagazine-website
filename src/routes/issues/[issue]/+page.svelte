@@ -10,16 +10,18 @@
     import { isUltraMode } from '$lib/store';
     import { afterNavigate } from '$app/navigation';
   
-    let { data } = $props();
+    let { data }: any = $props();
     
     let issue = $state(data?.issue);
     let issues = $state(data?.issues || []);
     let temporaryCalls = $state(data?.temporaryCalls || []);
+    let topBanner = $state(data?.topBanner ?? null);
 
     $effect(() => {
       issue = data?.issue || {};
       issues = data?.issues || [];
       temporaryCalls = data?.temporaryCalls || [];
+      topBanner = data?.topBanner ?? null;
     });
 
     //$inspect("📄 Page data:", issue);
@@ -72,7 +74,7 @@
   <meta property="og:image:height" content="627" />
 </svelte:head>
   
-  <Header issuesData={issues} temporaryCalls={data.temporaryCalls} headerVar = 'ISSUES'/>
+  <Header issuesData={issues} temporaryCalls={data.temporaryCalls} topBanner={topBanner} headerVar = 'ISSUES'/>
 
   {#key issue?.issueTitle || issue?._id}
   <IssueHero 

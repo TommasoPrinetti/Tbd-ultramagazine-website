@@ -1,11 +1,13 @@
 import { sanity } from "$lib/sanity.server";
-import { allIssuesQuery, allTemporaryCallsQuery } from "$lib/queries";
+import { allIssuesQuery, allTemporaryCallsQuery, siteSettingsQuery } from "$lib/queries";
 import { urlFor } from "$lib/imageUrl";
 
 export const load = async () => {
-  const [allIssues, allTemporaryCalls] = await Promise.all([
+  const [allIssues, allTemporaryCalls, siteSettings] = await Promise.all([
     sanity.fetch(allIssuesQuery),
     sanity.fetch(allTemporaryCallsQuery),
+    // Optional singleton — null until created in Studio, never throws
+    sanity.fetch(siteSettingsQuery).catch(() => null),
   ]);
 
   // Transform Sanity image objects to URLs, this is an internal processor
@@ -33,5 +35,27 @@ export const load = async () => {
     downloadPdfUrl: call.downloadPdf?.asset?.url || null,
   }));
 
-  return { issues, temporaryCalls };
+  // Homepage chrome: prefer siteSettings singleton, fall back to
+  // temporaryCalls[0] so existing Studio docs keep working.
+  const primaryCall = temporaryCalls[0] ?? null;
+  const topBanner = siteSettings?.topBanner ?? {
+    enabled: primaryCall?.bannerEnabled ?? true,
+    text:
+      primaryCall?.bannerText ??
+      (primaryCall?.title ? ` © TBD ULTRAMAGAZINE - ${primaryCall.title} - ` : " © TBD ULTRAMAGAZINE - "),
+    url: primaryCall?.bannerUrl ?? primaryCall?.hrefExternal ?? null,
+  };
+  const promoImage = siteSettings?.promoFeature?.image
+    ? urlFor(siteSettings.promoFeature.image)
+    : null;
+  const homepagePromo = siteSettings?.promoFeature ?? {
+    enabled: primaryCall?.promoEnabled ?? true,
+    mode: "temporaryCall" as const,
+    title: null,
+    image: null,
+    ctaLabel: null,
+    ctaUrl: null,
+  };
+
+  return { issues, temporaryCalls, siteSettings, topBanner, homepagePromo: { ...homepagePromo, image: promoImage ?? homepagePromo.image } };
 };

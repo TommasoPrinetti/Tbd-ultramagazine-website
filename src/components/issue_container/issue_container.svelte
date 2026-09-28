@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { issuesData } = $props();
+  let { issuesData }: any = $props();
 
   import SingleIssue from '$components/issue_container/single_issue.svelte';
   import SingleCard from './single_card.svelte';

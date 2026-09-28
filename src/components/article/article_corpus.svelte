@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { tick } from 'svelte';
     import { goto } from '$app/navigation';
     
@@ -8,21 +8,59 @@
 
     const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
 
-    let { article, issuesData, articlesData } = $props();
+    // Sanity mode passes precomputed `related` + `slider`; JSON legacy mode
+    // falls back to issuesData/articlesData derivation (unchanged behavior).
+    let { article, issuesData, articlesData, related = null, slider = null }: any = $props();
 
     let isSliderOpen = $state(false);
     let reloadStatus = $state(false);
 
-    let relatedArticles = $derived(article ? articlesData.filter(a => a.parentIssue === article.parentIssue && a.articleName !== article.articleName) : []);
+    let legacyRelated = $derived(
+        article && articlesData && article.parentIssue && article.articleName
+            ? articlesData.filter((a: any) => a.parentIssue === article.parentIssue && a.articleName !== article.articleName)
+            : []
+    );
+    let relatedArticles = $derived(related ?? legacyRelated);
 
-    let currentIssueData = $derived(article ? issuesData.find(issue => String(issue.issueTitle) === String(article.parentIssue)) || {} : {});
+    let legacyIssue = $derived(
+        article && issuesData && article.parentIssue
+            ? issuesData.find((issue: any) => String(issue.issueTitle) === String(article.parentIssue)) || {}
+            : {}
+    );
+    let sliderData = $derived(
+        slider ?? {issueCover: legacyIssue.issueCover, issuePrice: legacyIssue.issuePrice, issueTitle: legacyIssue.issueTitle}
+    );
 
-    let rowsDidascalie = $derived(article?.didascalie && typeof article.didascalie === 'string' ? article.didascalie.split('*').filter(Boolean) : []);
+    // Didascalie/bibliografie: Sanity gives arrays, JSON gives *-separated strings.
+    let rowsDidascalie = $derived(
+        Array.isArray(article?.rowsDidascalie)
+            ? article.rowsDidascalie
+            : article?.didascalie && typeof article.didascalie === 'string'
+              ? article.didascalie.split('*').filter(Boolean)
+              : []
+    );
 
-    let rowsBibliografie = $derived(article?.bibliografie && typeof article.bibliografie === 'string' ? article.bibliografie.split('*').filter(Boolean) : []);
+    let rowsBibliografie = $derived(
+        Array.isArray(article?.rowsBibliografie)
+            ? article.rowsBibliografie
+            : article?.bibliografie && typeof article.bibliografie === 'string'
+              ? article.bibliografie.split('*').filter(Boolean)
+              : []
+    );
 
-    function navigateToArticle(relatedArticle) {
-        const url = `../../../issues/${relatedArticle.parentIssue}/articles/${relatedArticle.articleName}`;
+    let isPortableText = $derived(Array.isArray(article?.body));
+
+    function relatedHref(r: any) {
+        if (r?.href) return r.href;
+        return `../../../issues/${r.parentIssue}/articles/${r.articleName}`;
+    }
+
+    function relatedTitle(r: any) {
+        return r?.title ?? r?.articleTitle ?? '';
+    }
+
+    function navigateToArticle(relatedArticle: any) {
+        const url = relatedHref(relatedArticle);
 
         const opts = {
             replaceState: true,
@@ -48,8 +86,8 @@
                 <div class="index_container vertical_flex">
                     <div class="vertical_flex">
                         {#each relatedArticles as relatedArticle, index}
-                            <a href={`/issues/${relatedArticle.parentIssue}/articles/${relatedArticle.articleName}`} data-sveltekit-preload-data onclick={(e) => { e.preventDefault(); navigateToArticle(relatedArticle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateToArticle(relatedArticle); } }} data-sveltekit-reload role="button" tabindex="0" aria-label={`Navigate to article: ${relatedArticle.articleTitle}`}>
-                                <p class="p3">#{0}{index+1}: {@html relatedArticle.articleTitle}</p>
+                            <a href={relatedHref(relatedArticle)} data-sveltekit-preload-data onclick={(e) => { e.preventDefault(); navigateToArticle(relatedArticle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateToArticle(relatedArticle); } }} data-sveltekit-reload role="button" tabindex="0" aria-label={`Navigate to article: ${relatedTitle(relatedArticle)}`}>
+                                <p class="p3">#{0}{relatedArticle.index ?? index+1}: {@html relatedTitle(relatedArticle)}</p>
                             </a>
                         {/each}
                     </div>
@@ -85,7 +123,27 @@
                     {article?.articleTitle}
                 </h2>
 
-                {#each Object.keys(article?.articleContent) as key (key)}
+                {#if isPortableText}
+                    {#each article.body as blk (blk._key)}
+                        {#if blk._type === 'block'}
+                            {#if blk.style === 'h2'}
+                                <h2>{#each blk.children ?? [] as span}<span class={span.marks?.join(' ')}>{span.text}</span>{/each}</h2>
+                            {:else if blk.style === 'blockquote'}
+                                <blockquote class="p2">{#each blk.children ?? [] as span}<span class={span.marks?.join(' ')}>{span.text}</span>{/each}</blockquote>
+                            {:else}
+                                <p class="p2">{#each blk.children ?? [] as span}<span class={span.marks?.join(' ')}>{span.text}</span>{/each}</p>
+                            {/if}
+                        {:else if blk._type === 'bodyImage' && blk.asset?.url}
+                            <img src={blk.asset.url} alt={blk.caption ?? article?.articleTitle ?? ''} />
+                            {#if blk.caption}
+                                <p class="d2">{blk.caption}</p>
+                            {/if}
+                        {:else if blk._type === 'gallery'}
+                            <ArticleGallery images={(blk.images ?? []).map((i: any) => ({url: i.asset?.url, caption: i.caption}))} />
+                        {/if}
+                    {/each}
+                {:else if article?.articleContent}
+                {#each Object.keys(article.articleContent) as key (key)}
                     {#if key.startsWith('p') && article?.articleContent[key]}
                         {#each article?.articleContent[key].split('\n') as line}
                             <p class="p2">{@html line}</p>
@@ -96,6 +154,7 @@
                         <ArticleGallery galleryFolderPath={article?.articleContent[key]}/>
                     {/if}
                 {/each}
+                {/if}
                 
             </div>
             
@@ -121,9 +180,7 @@
 
 <BuyingSlider
     bind:isSliderOpen
-    issueCover={currentIssueData.issueCover}
-    issuePrice={currentIssueData.issuePrice}
-    issueTitle={article?.issueTitle}
+    issueData={sliderData}
 />
 
 
@@ -146,6 +203,15 @@
 .read .p2,
 .d2 {
   hyphens: auto;
+}
+.read span.strong {
+  font-weight: 800;
+}
+.read span.em {
+  font-style: italic;
+}
+.read span.underline {
+  text-decoration: underline;
 }
 .read h2 {
   text-transform: uppercase;

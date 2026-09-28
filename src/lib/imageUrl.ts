@@ -5,8 +5,8 @@ import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { env } from "$env/dynamic/private";
 
 const builder = imageUrlBuilder({
-  projectId: env.SANITY_PROJECT_ID,
-  dataset: env.SANITY_DATASET,
+  projectId: env.SANITY_PROJECT_ID || '8c5n4win',
+  dataset: env.SANITY_DATASET || 'tbd_issues',
 });
 
 export function urlFor(
