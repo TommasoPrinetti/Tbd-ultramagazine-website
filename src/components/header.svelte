@@ -12,7 +12,15 @@
   
   // Unpublished issues (showPage === false) stay hidden everywhere
   const visibleIssues = ((issuesData || []) as any[]).filter((issue: any) => issue.showPage !== false);
-  const latestIssue = (visibleIssues?.find((issue: any) => issue.isLatestIssue === true));
+  // Latest = manual flag wins, otherwise the highest releaseOrder in
+  // category 'issues' (1 = first out, so max = most recent).
+  const latestIssue = (
+    visibleIssues?.find((issue: any) => issue.isLatestIssue === true) ??
+    [...visibleIssues]
+      .filter((issue: any) => issue.issueCategory === 'issues' && typeof issue.releaseOrder === 'number')
+      .sort((a: any, b: any) => b.releaseOrder - a.releaseOrder)[0] ??
+    visibleIssues?.find((issue: any) => issue.issueCategory === 'issues')
+  );
 
   function navigateTo(url: string | URL, options?: {
     replaceState?: boolean;

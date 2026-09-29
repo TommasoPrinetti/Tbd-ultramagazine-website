@@ -98,7 +98,13 @@
   {/if}
 
   {#if issue?.showManifesto !== false && issue?.manifestoTitle}
-    <Manifesto {...issue} id="EDITORIALE" />
+    <Manifesto
+      manifestoTitle={issue.manifestoTitle}
+      manifestoText={issue.manifestoText}
+      fileDownloadButton={issue.fileDownloadButton}
+      downloadPath={issue.manifestoFileUrl}
+      downloadText={issue.manifestoDownloadLabel ?? 'DOWNLOAD PDF'}
+    />
   {/if}
 
   {#if issue?.showCow !== false && issue?.CowElementText}

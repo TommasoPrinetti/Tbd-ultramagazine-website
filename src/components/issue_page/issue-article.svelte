@@ -35,11 +35,14 @@
         </div>
 
         <div class="vertical_flex article_text_container">
+          {#if articleData.ultra}
+            <p class="d2 ultra_tag">ULTRA</p>
+          {/if}
           <h2> {@html articleData.title} </h2>
           {#if articleData.description}
             <p class="p3"> {@html articleData.description} </p>
           {/if}
-        {#if articleHref}
+        {#if articleHref && articleData.showReadAll !== false}
           <button class="rounded_button" onclick={() => { goto(articleHref); }} data-sveltekit-preload>
               <p class="p2">
                   READ ALL
@@ -119,6 +122,13 @@ article h2 {
   /* Full abstract visible (was 3-line clamp + ellipsis) */
   display: block;
   overflow: visible;
+}
+
+.ultra_tag {
+  border: 1px solid var(--white-blue);
+  border-radius: 20px;
+  padding: 2px 10px;
+  width: fit-content;
 }
 
 @media screen and (max-width: 480px) {

@@ -10,7 +10,7 @@
         <p class="p2">
             {@html manifestoText}
         </p>
-        {#if fileDownloadButton === true}
+        {#if fileDownloadButton === true && downloadPath}
             <a class="button" href={downloadPath} download={manifestoTitle}>
                 <p class="p3">{downloadText}</p>
             </a>

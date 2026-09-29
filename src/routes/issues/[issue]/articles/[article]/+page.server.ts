@@ -52,7 +52,7 @@ export async function load({ params, parent }: any) {
         rowsDidascalie: nested.didascalie ?? [],
         showBibliografia: !!nested.showBibliografia,
         rowsBibliografie: nested.bibliografie ?? [],
-        heroImg: nested.hero?.asset?.url ?? nested.thumbnail?.asset?.url ?? null,
+        heroImg: nested.thumbnail?.asset?.url ?? nested.hero?.asset?.url ?? null,
         body: nested.body ?? [],
       },
     };

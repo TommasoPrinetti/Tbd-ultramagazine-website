@@ -38,6 +38,7 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(coalesce(releaseO
     },
     title,
     description,
+    showReadAll,
     slug,
     legacyName,
     hero{
@@ -81,7 +82,6 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(coalesce(releaseO
     asset->,
     alt
   },
-  UltraCowElementTitle,
   UltraCowElementText,
   UltraCowElementImg{
     asset->,
@@ -92,10 +92,15 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(coalesce(releaseO
     asset->,
     alt
   },
-  layoutOption,
   manifestoTitle,
   manifestoText,
-  fileDownloadButton
+  fileDownloadButton,
+  manifestoFile{
+    asset->{
+      url
+    }
+  },
+  manifestoDownloadLabel
 }`;
 
 // Query to get all Temporary Calls
@@ -112,7 +117,6 @@ export const allTemporaryCallsQuery = groq`*[_type == "temporaryCall"] | order(_
   ctaText,
   openDate,
   endDate,
-  referenceEmail,
   hrefExternal,
   downloadPdf{
     asset->,

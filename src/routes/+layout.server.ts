@@ -80,6 +80,8 @@ export const load = async () => {
     UltraGalleryImages: UltraGalleryFolder
       ? UltraGalleryFolder.map((img: any) => urlForOptimized(img, W.gallery)).filter(Boolean)
       : [],
+    // Manifesto download file (raw asset URL, no image optimization)
+    manifestoFileUrl: issue.manifestoFile?.asset?.url ?? null,
     // Nested articles (thumbnails, hero, portable-text body)
     articles: Array.isArray(issue.articles)
       ? issue.articles.map(optimizeNestedArticle)
