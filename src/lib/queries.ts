@@ -66,10 +66,6 @@ export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
   },
   CowImgDidascalia,
   isIssueUltra,
-  ultraCover{
-    asset->,
-    alt
-  },
   ultraHoverImg{
     asset->,
     alt
