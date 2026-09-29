@@ -8,10 +8,6 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({name: 'showPage', title: 'Show page', type: 'boolean', initialValue: true}),
-    defineField({name: 'showGallery', title: 'Show gallery', type: 'boolean', initialValue: true}),
-    defineField({name: 'showManifesto', title: 'Show manifesto', type: 'boolean', initialValue: true}),
-    defineField({name: 'showCow', title: 'Show cow element', type: 'boolean', initialValue: true}),
-    defineField({name: 'showArticles', title: 'Show articles', type: 'boolean', initialValue: true}),
     defineField({
       name: 'releaseOrder',
       title: 'Release order (No.)',
@@ -38,12 +34,14 @@ export default defineType({
       },
       validation: (r) => r.required(),
     }),
+    defineField({name: 'showGallery', title: 'Show gallery', type: 'boolean', initialValue: true}),
     defineField({
       name: 'galleryImgList',
       title: 'Mag gallery',
       type: 'array',
       of: [{type: 'image', options: {hotspot: true}}],
     }),
+    defineField({name: 'showArticles', title: 'Show articles', type: 'boolean', initialValue: true}),
     defineField({
       name: 'articles',
       title: 'Articles',
@@ -133,6 +131,7 @@ export default defineType({
         },
       ],
     }),
+    defineField({name: 'showCow', title: 'Show cow element', type: 'boolean', initialValue: true}),
     defineField({name: 'CowElementText', title: 'Cow element text', type: 'text'}),
     defineField({name: 'CowElementImg', title: 'Cow element image', type: 'image'}),
     defineField({name: 'CowImgDidascalia', title: 'Cow image caption', type: 'string'}),
@@ -162,6 +161,7 @@ export default defineType({
         ],
       },
     }),
+    defineField({name: 'showManifesto', title: 'Show manifesto', type: 'boolean', initialValue: true}),
     defineField({name: 'manifestoTitle', title: 'Manifesto title', type: 'string'}),
     defineField({name: 'manifestoText', title: 'Manifesto text', type: 'text'}),
     defineField({name: 'fileDownloadButton', title: 'Download button', type: 'boolean', initialValue: false}),
