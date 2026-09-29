@@ -66,7 +66,7 @@
 
   <meta property="og:title" content={issue?.issueTitle} />
   <meta property="og:description" content={issue?.issueHeroText} />
-  <meta property="og:image" content={issue?.issueThumbnail} />
+  <meta property="og:image" content={issue?.issueThumbnail?.startsWith('/') ? `https://www.tbdultramagazine.com${issue.issueThumbnail}` : issue?.issueThumbnail} />
 
   <meta property="og:image:alt" content={issue?.issueTitle} />
 

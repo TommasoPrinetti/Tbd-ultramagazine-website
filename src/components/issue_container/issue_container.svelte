@@ -5,10 +5,11 @@
   import SingleCard from './single_card.svelte';
   import Divider from '$components/article/divider.svelte';
 
-  // Filter issues by category
-  const regularIssues = issuesData.filter((issue: any) => issue.issueCategory === 'issues' && issue.issueCover);
-  const publications = issuesData.filter((issue: any) => issue.issueCategory === 'publications' && issue.issueCover);
-  const specialProjects = issuesData.filter((issue: any) => issue.issueCategory === 'special projects' && issue.issueCover);
+  // Filter issues by category (unpublished issues stay hidden everywhere)
+  const visibleIssues = (issuesData || []).filter((issue: any) => issue.showPage !== false);
+  const regularIssues = visibleIssues.filter((issue: any) => issue.issueCategory === 'issues' && issue.issueCover);
+  const publications = visibleIssues.filter((issue: any) => issue.issueCategory === 'publications' && issue.issueCover);
+  const specialProjects = visibleIssues.filter((issue: any) => issue.issueCategory === 'special projects' && issue.issueCover);
 </script>
 
 <!-- Regular Issues -->

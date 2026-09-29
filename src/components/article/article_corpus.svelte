@@ -52,7 +52,7 @@
 
     function relatedHref(r: any) {
         if (r?.href) return r.href;
-        return `../../../issues/${r.parentIssue}/articles/${r.articleName}`;
+        return `/issues/${r.parentIssue}/articles/${r.articleName}`;
     }
 
     function relatedTitle(r: any) {

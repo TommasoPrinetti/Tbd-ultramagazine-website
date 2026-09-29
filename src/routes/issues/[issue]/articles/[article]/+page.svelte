@@ -29,7 +29,7 @@
     <meta property="og:type" content="article" />
     <meta property="og:title" content={article.articleTitle} />
     <meta property="og:description" content={article.articleText} />
-    <meta property="og:image" content={heroArticle.articleImg} />
+    <meta property="og:image" content={heroArticle.articleImg?.startsWith('/') ? `https://www.tbdultramagazine.com${heroArticle.articleImg}` : heroArticle.articleImg} />
     <meta property="og:image:alt" content={article.articleTitle} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="627" />

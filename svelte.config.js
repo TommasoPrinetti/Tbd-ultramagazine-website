@@ -6,10 +6,8 @@ const config = {
     adapter: adapter(),
     alias: {
       // Alias configuration as per the updated documentation
-      $webresources: "src/lib/webresources",
       $components: "src/components",
       $routes: "src/routes",
-      $types: "src/typefaces",
       $issues: "src/routes/issues/",
       $articles: "src/routes/issues/[issue]/articles",
     },

@@ -6,6 +6,9 @@ import articlesData from '$lib/articles_new.json';
 export async function load({ params, parent }: any) {
   const { issues } = (await parent()) as { issues: any[] };
   const issue = (issues || []).find((i: any) => i.issueTitle === params.issue);
+  if (issue?.showPage === false) {
+    throw error(404, 'Issue not found');
+  }
   const nested = issue?.articles?.find(
     (a: any) => a.legacyName === params.article || a.slug?.current === params.article,
   );

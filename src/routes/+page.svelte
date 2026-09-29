@@ -10,6 +10,7 @@
     let contentPrev = "TBD, acronimo di “To Be Defined”, è un progetto editoriale che dal 2019 pubblica volumi tematici e collabora con artist* per la realizzazione di eventi a essi collegati. Il percorso critico di ogni numero si sviluppa a partire da fatti d’attualità definiti zeitgeisting, notizie o icone virali che rivelano lo spirito culturale del tempo. Ogni fatto è sintomo e/o coadiuvante di tematiche più ampie, trattate sotto forma di saggi scritti e contenuti visivi. A partire da un focus specifico sulla contemporaneità"
 
     const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
+    const SiteUrl = 'https://www.tbdultramagazine.com';
 
     let { data }: any = $props();
 
@@ -52,13 +53,41 @@
     let isCallOpen = $derived.by(() => {
       const call = data.temporaryCalls[0];
       if (!call?.openDate) return true; // Show if no openDate is set
-      
+
       const nowStr = getEuropeDateString();
       const openDate = new Date(call.openDate);
       const openStr = toEuropeDateString(openDate);
-      
+
       return nowStr >= openStr;
     });
+
+    // Homepage promo: `custom` mode renders the siteSettings promoFeature
+    // fields; otherwise the latest temporary call is featured.
+    let isCustomPromo = $derived(data.homepagePromo?.mode === 'custom');
+    let promo = $derived(
+      isCustomPromo
+        ? {
+            title: data.homepagePromo?.title,
+            image: data.homepagePromo?.image,
+            ctaText: data.homepagePromo?.ctaLabel,
+            href: data.homepagePromo?.ctaUrl,
+          }
+        : {
+            title: data.temporaryCalls[0]?.title,
+            image: data.temporaryCalls[0]?.image,
+            ctaText: data.temporaryCalls[0]?.ctaText,
+            href: `/calls/${createSlug(data.temporaryCalls[0]?.title)}`,
+          }
+    );
+    let isPromoExternal = $derived(
+      typeof promo.href === 'string' && /^(https?:)?\/\//.test(promo.href)
+    );
+    let showPromo = $derived(
+      isPromoEnabled &&
+        (isCustomPromo
+          ? !!(promo.title || promo.image)
+          : isCallOpen && !!data.temporaryCalls[0] && data.temporaryCalls[0]?.showPage !== false)
+    );
 </script>
 
 <svelte:head>
@@ -70,7 +99,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:title" content="TBD ULTRAMAGAZINE" />
   <meta property="og:description" content={contentPrev} />
-  <meta property="og:image" content={`/IDENTITY_IMAGES/tbd_LOGO.webp`} />
+  <meta property="og:image" content={`${SiteUrl}/IDENTITY_IMAGES/tbd_LOGO.webp`} />
   <meta property="og:image:alt" content="TBD ULTRAMAGAZINE" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="627" />
@@ -80,24 +109,30 @@
   <LandHero />
   
   
-  {#if isPromoEnabled && isCallOpen && data.temporaryCalls[0] && data.temporaryCalls[0]?.showPage}
+  {#if showPromo}
     <div class="temporary_call_container vertical_flex" id="LATEST">
-      <Divider category="temporary call" />
+      <Divider category={isCustomPromo ? 'promo' : 'temporary call'} />
       <h2>
-        {data.temporaryCalls[0]?.title}
+        {promo.title}
       </h2>
-    
-      <img src={data.temporaryCalls[0]?.image} alt="Last Issue">
-    
-      <div class="temporary_call_text">
-        <div class="vertical_flex" style="align-items: center; justify-content: center;">
-            <a class="rounded_button" style="z-index: 2;"
-            href={`/calls/${createSlug(data.temporaryCalls[0]?.title)}`}
-            data-sveltekit-preload>
-              <p class="p2">{data.temporaryCalls[0]?.ctaText}</p>
-            </a>
+
+      {#if promo.image}
+        <img src={promo.image} alt="Last Issue">
+      {/if}
+
+      {#if promo.href && promo.ctaText}
+        <div class="temporary_call_text">
+          <div class="vertical_flex" style="align-items: center; justify-content: center;">
+              <a class="rounded_button" style="z-index: 2;"
+              href={promo.href}
+              target={isPromoExternal ? '_blank' : undefined}
+              rel={isPromoExternal ? 'noopener noreferrer' : undefined}
+              data-sveltekit-preload>
+                <p class="p2">{promo.ctaText}</p>
+              </a>
+          </div>
         </div>
-      </div>
+      {/if}
     </div>
   {/if}
 

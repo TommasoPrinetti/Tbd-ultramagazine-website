@@ -10,7 +10,9 @@
 
   let { headerVar = 'COMMON', issuesData, temporaryCalls, topBanner = null } = $props();
   
-  const latestIssue = (issuesData?.find((issue: any) => issue.isLatestIssue === true));
+  // Unpublished issues (showPage === false) stay hidden everywhere
+  const visibleIssues = ((issuesData || []) as any[]).filter((issue: any) => issue.showPage !== false);
+  const latestIssue = (visibleIssues?.find((issue: any) => issue.isLatestIssue === true));
 
   function navigateTo(url: string | URL, options?: {
     replaceState?: boolean;
@@ -174,11 +176,11 @@
       </div>
       {/if}
       <div class="titles_container vertical_flex">
-        <a href="#ISSUES" onclick={() => navigateTo('/#ISSUES')}>
+        <a href="/#ISSUES" onclick={() => navigateTo('/#ISSUES')}>
           <p class="p1" style="text-decoration: underline;">ISSUES</p>
         </a>
         
-        {#each (issuesData || []) as issue}
+        {#each (visibleIssues || []) as issue}
         {#if issue.issueCategory === 'issues'}
           <a href={`/issues/${issue.issueTitle}`} onclick={(e) => { e.preventDefault(); navigateTo(issue.issueTitle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(issue.issueTitle); } }} data-sveltekit-preload class="link" role="button" tabindex="0">  
             <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
@@ -190,11 +192,11 @@
       </div>
       
       <div class="titles_container vertical_flex">
-        <a href="#VOLUMES" onclick={() => navigateTo('#VOLUMES')}>
+        <a href="/#VOLUMES" onclick={() => navigateTo('/#VOLUMES')}>
           <p class="p1" style="text-decoration: underline;">VOLUMES</p>
         </a>
         
-        {#each (issuesData || []) as publication}
+        {#each (visibleIssues || []) as publication}
         {#if publication.issueCategory === 'publications'}
           <a href={`/issues/${publication.issueTitle}`} onclick={(e) => { e.preventDefault(); navigateTo(publication.issueTitle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(publication.issueTitle); } }} data-sveltekit-preload class="link" role="button" tabindex="0">
             <p class="p1" style="padding-bottom: 0px; font-weight: 400;">
@@ -205,10 +207,10 @@
         {/each}
       </div>
       <div class="titles_container vertical_flex">
-        <a href="#SPECIALS" onclick={() => navigateTo('#SPECIALS')}>
+        <a href="/#SPECIALS" onclick={() => navigateTo('/#SPECIALS')}>
           <p class="p1" style="text-decoration: underline;">SPECIALS</p>
         </a>
-        {#each issuesData as specialProject}
+        {#each visibleIssues as specialProject}
         {#if specialProject.issueCategory === 'special projects'}
         <a href={`/issues/${specialProject.issueTitle}`} onclick={(e) => { e.preventDefault(); navigateTo(specialProject.issueTitle); }} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(specialProject.issueTitle); } }} data-sveltekit-preload class="link" role="button" tabindex="0">
           <p class="p1" style="padding-bottom: 0px; font-weight: 400;">

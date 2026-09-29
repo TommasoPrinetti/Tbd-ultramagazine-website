@@ -18,7 +18,7 @@ export async function load({
   // Find issue by issueTitle (routing is based on issueTitle, not issueNumber)
   const issue = issues.find((issue: any) => issue.issueTitle === params.issue);
 
-  if (!issue) {
+  if (!issue || issue.showPage === false) {
     throw error(404, "Issue not found");
   }
 
