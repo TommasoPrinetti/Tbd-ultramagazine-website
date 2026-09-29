@@ -48,9 +48,9 @@
                 </button>
             {/each}
         </section>
-        <div class="switch_container" onclick={cycleImages} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { cycleImages(); } }} role="button" tabindex="0" aria-label="Next image">
+        <button type="button" class="switch_container" onclick={cycleImages} aria-label="Next image" style="border: none; background: none; padding: 0; cursor: pointer; font: inherit;">
             <p class="p1">NEXT →</p>
-        </div>
+        </button>
 {:else if galleryFolderPath}
         <section class="gallery">
             {#each Array.from({ length: lengthNumber }, (_, i) => i + 1) as imageIndex}
@@ -59,9 +59,9 @@
                 </button>
             {/each}
         </section>
-        <div class="switch_container" onclick={cycleImages} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { cycleImages(); } }} role="button" tabindex="0" aria-label="Next image">
+        <button type="button" class="switch_container" onclick={cycleImages} aria-label="Next image" style="border: none; background: none; padding: 0; cursor: pointer; font: inherit;">
             <p class="p1">NEXT →</p>
-        </div>
+        </button>
 {/if}
 
 

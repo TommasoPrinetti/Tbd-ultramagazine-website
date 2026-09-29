@@ -83,12 +83,9 @@ article h2 {
 
 .article_text_container > p {
   width: 80%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  line-clamp: 3;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Full abstract visible (was 3-line clamp + ellipsis) */
+  display: block;
+  overflow: visible;
 }
 
 @media screen and (max-width: 480px) {
