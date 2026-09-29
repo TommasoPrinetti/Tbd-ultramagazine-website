@@ -3,6 +3,19 @@ import articlesData from '$lib/articles_new.json';
 
 // Resolves a full article body: nested Sanity article first (ISSUE > ARTICLES),
 // legacy JSON fallback (keeps TERRAFORMA EXO + old URLs alive).
+// Slugified-title fallback so articles without a stored slug/legacyName
+// in Sanity stay reachable (mirrors the issue-article link builder).
+function createSlug(title: string | null | undefined) {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+}
+
 export async function load({ params, parent }: any) {
   const { issues } = (await parent()) as { issues: any[] };
   const issue = (issues || []).find((i: any) => i.issueTitle === params.issue);
@@ -10,7 +23,7 @@ export async function load({ params, parent }: any) {
     throw error(404, 'Issue not found');
   }
   const nested = issue?.articles?.find(
-    (a: any) => a.legacyName === params.article || a.slug?.current === params.article,
+    (a: any) => a.legacyName === params.article || a.slug?.current === params.article || createSlug(a.title) === params.article,
   );
   if (nested && issue) {
     const related = (issue.articles || [])
@@ -18,7 +31,7 @@ export async function load({ params, parent }: any) {
       .map((a: any, i: number) => ({
         index: i + 1,
         title: a.title,
-        href: `/issues/${issue.issueTitle}/articles/${a.slug?.current ?? a.legacyName ?? a.title}`,
+        href: `/issues/${issue.issueTitle}/articles/${a.slug?.current ?? a.legacyName ?? createSlug(a.title)}`,
       }));
     return {
       mode: 'sanity' as const,

@@ -33,6 +33,14 @@
         : []
     );
 
+    // Articles without a section (e.g. LAGNE) would otherwise vanish:
+    // render them in a single ungrouped block.
+    let ungroupedArticles = $derived(
+      issue?.articles && Array.isArray(issue.articles)
+        ? issue.articles.filter((article: any) => !article.section)
+        : []
+    );
+
 
     $effect(() => {
       if (typeof window !== "undefined") {
@@ -144,6 +152,17 @@
   {/if}
 
   <div class="article_list_container" id="ARTICLES">
+    {#if sectionNames.length === 0 && ungroupedArticles.length > 0}
+      <div class="section_name">
+        <h3>ARTICLES</h3>
+      </div>
+      {#each ungroupedArticles as articleContent}
+        <IssueArticle
+          articleData = {articleContent}
+          issueTitle = {issue?.issueTitle}
+         />
+      {/each}
+    {/if}
     {#each sectionNames as sectionName}
       <div class="section_name">
         <h3>{sectionName}</h3>
@@ -151,6 +170,7 @@
       {#each issue?.articles?.filter((article: any) => article.section === sectionName) as articleContent}
         <IssueArticle
           articleData = {articleContent}
+          issueTitle = {issue?.issueTitle}
          />
       {/each}
     {/each} 

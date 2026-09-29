@@ -8,7 +8,7 @@
 
   const TbdLogo = '/IDENTITY_IMAGES/tbd_LOGO.webp';
 
-  let { headerVar = 'COMMON', issuesData, temporaryCalls, topBanner = null } = $props();
+  let { headerVar = 'COMMON', issuesData, temporaryCalls, topBanner = null, showLatest = true } = $props();
   
   // Unpublished issues (showPage === false) stay hidden everywhere
   const visibleIssues = ((issuesData || []) as any[]).filter((issue: any) => issue.showPage !== false);
@@ -75,11 +75,13 @@
 
 {#snippet header_buttons_container(type: string)}
   {#if type === 'COMMON'}
+    {#if showLatest}
     <a class="rounded_button" href="#LATEST">
       <p class="p2"> 
           LATEST
       </p>
     </a>
+    {/if}
     <a class="rounded_button" href="#ISSUES">
       <p class="p2"> 
           ISSUES

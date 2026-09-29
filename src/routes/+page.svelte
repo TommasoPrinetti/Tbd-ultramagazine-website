@@ -105,7 +105,7 @@
   <meta property="og:image:height" content="627" />
 </svelte:head>
 
-  <Header issuesData={data.issues} temporaryCalls={data.temporaryCalls} topBanner={data.topBanner}/>
+  <Header issuesData={data.issues} temporaryCalls={data.temporaryCalls} topBanner={data.topBanner} showLatest={showPromo}/>
   <LandHero />
   
   

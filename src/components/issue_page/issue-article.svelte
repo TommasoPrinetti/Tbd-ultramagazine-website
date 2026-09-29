@@ -1,18 +1,51 @@
 <script>
-    let { articleData } = $props();
+    let { articleData, issueTitle = null } = $props();
 
     import { goto } from '$app/navigation';
     import { isUltraMode } from '$lib/store';
+
+    // Slug source for the article page: stored slug wins, otherwise a
+    // slugified title (mirrors the server fallback) so articles without a
+    // slug/legacyName in Sanity stay reachable.
+    /** @param {string} title */
+    function createSlug(title) {
+      if (!title) return "";
+      return title
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w\-]+/g, "")
+        .replace(/\-\-+/g, "-")
+        .replace(/^-+/, "")
+        .replace(/-+$/, "");
+    }
+
+    let articleSlug = $derived(
+      articleData.slug?.current ?? articleData.legacyName ?? createSlug(articleData.title)
+    );
+    let articleHref = $derived(
+      issueTitle && articleSlug ? `/issues/${issueTitle}/articles/${articleSlug}` : null
+    );
 </script>
 
 <article class="base_grid">
         <div class="article_img_container" class:overlay={$isUltraMode} >
-            <img src={articleData.thumbnail.asset.url} alt="AltText">
+            {#if articleData.thumbnail?.asset?.url}
+              <img src={articleData.thumbnail.asset.url} alt="AltText">
+            {/if}
         </div>
 
         <div class="vertical_flex article_text_container">
           <h2> {@html articleData.title} </h2>
-          <p class="p3"> {@html articleData.description} </p>
+          {#if articleData.description}
+            <p class="p3"> {@html articleData.description} </p>
+          {/if}
+        {#if articleHref}
+          <button class="rounded_button" onclick={() => { goto(articleHref); }} data-sveltekit-preload>
+              <p class="p2">
+                  READ ALL
+              </p>
+          </button>
+        {/if}
         <!-- This is the old navigational btn
           <button class="rounded_button" onclick={() => { goto(`./${articleData.parentIssue}/articles/${articleData.articleName}`); }} data-sveltekit-reload>
               <p class="p2"> 
