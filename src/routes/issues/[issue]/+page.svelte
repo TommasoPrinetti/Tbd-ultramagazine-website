@@ -89,34 +89,21 @@
   issueData={issue}/>
   
 
-  {#await issue?.galleryImages}
-  <p>Loading gallery images...</p>
-    {:then galleryImages}
-    {#if issue?.layoutOption === 'Classic'}
-        {#if $isUltraMode}
-          <MagGallery images={issue.UltraGalleryImages} />
-        {:else}
-          <MagGallery images={galleryImages} />
-        {/if}
-      {:else if issue?.layoutOption === 'Manifesto'}
-        {#if issue?.manifestoTitle}
-          <Manifesto {...issue} id="EDITORIALE" />
-        {/if}
+  {#if issue?.showGallery !== false}
+    {#if $isUltraMode && issue.UltraGalleryImages?.length}
+      <MagGallery images={issue.UltraGalleryImages} />
+    {:else if !$isUltraMode && issue.galleryImages?.length}
+      <MagGallery images={issue.galleryImages} />
+    {/if}
+  {/if}
 
-      {:else if issue?.layoutOption === 'Ibrido'}
-          {#if $isUltraMode}
-            <MagGallery images={issue.UltraGalleryImages} />
-          {:else}
-            <MagGallery images={issue.galleryImages} />
-          {/if}
-        {#if issue?.manifestoTitle}
-          <Manifesto {...issue} id="EDITORIALE" />
-        {/if}
-        {#if issue?.CowElementText}
-          <CowElement issueData={issue} />
-        {/if}
-      {/if}
-  {/await}
+  {#if issue?.showManifesto !== false && issue?.manifestoTitle}
+    <Manifesto {...issue} id="EDITORIALE" />
+  {/if}
+
+  {#if issue?.showCow !== false && issue?.CowElementText}
+    <CowElement issueData={issue} />
+  {/if}
 
   {#if issue?.issueTitle === 'ISSUE 3'}
     <div class="video_gallery ">
@@ -151,6 +138,7 @@
     </div>
   {/if}
 
+  {#if issue?.showArticles !== false}
   <div class="article_list_container" id="ARTICLES">
     {#if sectionNames.length === 0 && ungroupedArticles.length > 0}
       <div class="section_name">
@@ -175,6 +163,7 @@
       {/each}
     {/each} 
   </div>
+  {/if}
 
 <Footer />
 

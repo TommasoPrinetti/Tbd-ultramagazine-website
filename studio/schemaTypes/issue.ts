@@ -8,6 +8,10 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({name: 'showPage', title: 'Show page', type: 'boolean', initialValue: true}),
+    defineField({name: 'showGallery', title: 'Show gallery', type: 'boolean', initialValue: true}),
+    defineField({name: 'showManifesto', title: 'Show manifesto', type: 'boolean', initialValue: true}),
+    defineField({name: 'showCow', title: 'Show cow element', type: 'boolean', initialValue: true}),
+    defineField({name: 'showArticles', title: 'Show articles', type: 'boolean', initialValue: true}),
     defineField({
       name: 'releaseOrder',
       title: 'Release order (No.)',
@@ -148,6 +152,7 @@ export default defineType({
     defineField({
       name: 'layoutOption',
       title: 'Layout',
+      description: 'Deprecated: block visibility is now controlled by the Show toggles above.',
       type: 'string',
       options: {
         list: [
