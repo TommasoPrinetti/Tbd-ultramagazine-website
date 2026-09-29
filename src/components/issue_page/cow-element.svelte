@@ -1,56 +1,69 @@
 <script>
-    export let CowElementText
-    export let CowElementImg
-    export let CowImgDidascalia
-
-    export let UltraCowElementText
-    export let UltraCowElementTitle
-
-    export let UltraGalleryFolder
-    export let lengthNumber = 10;
-
+    let { 
+        issueData
+    } = $props();
+    import { isUltraMode } from '$lib/store';
 </script>
 
-<section id="ABSTRACT" class="default_appear"> 
-    <!-- TYPO -->
-    <div class="responsive-container">
-        <p2>
-            {CowElementText}
-        </p2>
+<div id="EDITORIALE" class="base_grid cow_element "> 
+    <div class="cow_text">
+        <p class="p2">
+            {#if $isUltraMode}
+                {@html issueData?.UltraCowElementText}
+            {:else}
+                {@html issueData?.CowElementText}
+            {/if}
+        </p>
     </div>
 
-    <!-- IMG -->
-    <div class="imgcontainer">
-        <img style="width: 100%;" src={CowElementImg} alt="">
-        <d1>{@html CowImgDidascalia}</d1>
+    <div class="cow_img">
+        {#if $isUltraMode}
+            <img style="width: 100%;" src={issueData?.UltraCowElementImg} alt="">
+            <p class="d1">{@html issueData?.UltraCowImgDidascalia}</p>
+        {:else}
+            <img style="width: 100%;" src={issueData?.CowElementImg} alt="">
+            <p class="d1">{@html issueData?.CowImgDidascalia}</p>
+        {/if}
     </div>
-</section>
+</div>
 
-<section id="ABSTRACT" class="ultra_appear"> 
-    <!-- TYPO -->
-    <div class="responsive-container">
-        <p2>
-            <strong>{UltraCowElementTitle}</strong>
-            <br>
-            <br>
-            {@html UltraCowElementText}
-        </p2>
-    </div>
+<style>
+    .cow_element {
+        padding: 0px var(--spacing-l);
+    }
 
-    <!-- IMG -->
-    <div class="imgcontainer">
-        <gallery>
-            <section>
-                {#each Array.from({ length: lengthNumber }, (_, i) => i + 1) as imageIndex}
-                    <a id={`image${imageIndex}`}>
-                        <img src={`${UltraGalleryFolder}/GALLERY_${imageIndex}.webp`} alt={`GALLERY_${imageIndex}`}>
-                    </a>
-                {/each}
-            </section>
+    .cow_text {
+        grid-column: span 8;
+        height: fit-content;
+    }
 
-            <div class="switch_container">
-                <p1>NEXT →</p1>
-            </div>
-        </gallery>
-    </div>
-</section>
+    .cow_img {
+        display: flex;
+        height: auto;
+        flex-direction: column;
+        gap: var(--spacing-s);
+        grid-column: span 8;
+    }
+
+    .cow_img img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    @media screen and (max-width: 480px) {
+        .cow_element {
+            padding: var(--spacing-s);
+        }
+
+        .cow_text {
+            grid-column: span 2;
+        }
+
+        .cow_img {
+            grid-column: span 2;
+        }
+        
+    }
+</style>

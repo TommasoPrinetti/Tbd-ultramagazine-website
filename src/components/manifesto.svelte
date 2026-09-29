@@ -1,29 +1,53 @@
 <script>
-//Manifesto.svelte
-
-    export let manifestoTitle
-    export let manifestoText
-    export let downloadPath
-    export let downloadText
-    export let fileDownloadButton
+    let { manifestoTitle, manifestoText, downloadPath, downloadText, fileDownloadButton } = $props();
 
 </script>
 
-<manifesto id="ABSTRACT">
-    <section> 
+<div class="manifesto base_grid" id="EDITORIALE">
         <h2>
             {manifestoTitle}
         </h2>
-        <p2>
+        <p class="p2">
             {@html manifestoText}
-        </p2>
+        </p>
         {#if fileDownloadButton === true}
             <a class="button" href={downloadPath} download={manifestoTitle}>
-                <p3>{downloadText}</p3>
+                <p class="p3">{downloadText}</p>
             </a>
         {/if}
-    </section>
-</manifesto>
+</div >
 
+
+<style>
+    .manifesto {
+        padding: var(--spacing-l);
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--spacing-m);
+        align-items: center;
+        width: 100%;
+        height: fit-content;
+    }
+
+    .manifesto .p2 {
+        width: 70%;
+    }
+
+@media screen and (max-width: 480px) {
+
+    .manifesto {
+        padding: var(--spacing-l) var(--spacing-s);
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--spacing-s);
+        align-items: flex-start;
+        flex: 1 0 0;
+    }
+
+    .manifesto .p2 {
+        width: 100%;
+    }
+}
+</style>
 
 

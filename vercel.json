@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build",
+  "installCommand": "rm -rf node_modules .vercel/output && npm install",
+  "framework": "sveltekit"
+}

@@ -208,6 +208,8 @@
 <div class:visible={youtubeVisible} class="youtube-host" aria-hidden={!youtubeVisible}>
   <div id="youtube-player"></div>
 </div>
+<!-- pointer-only hover layer revealing the players; not keyboard-operable by design -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="motion-layer" on:mousemove={revealControls} on:touchstart={revealControls}></div>
 <div class:visible={bandcampVisible} class="bandcamp-host" aria-hidden={!bandcampVisible}>
   <iframe src={bandcampSrc} title="Bandcamp player" allow="autoplay" loading="lazy"></iframe>

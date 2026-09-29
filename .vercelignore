@@ -1,0 +1,4 @@
+# Dead duplicate of static/CURSOR/definitive.cur (root files aren't served by SvelteKit; CSS uses /CURSOR/definitive.cur)
+definitive.cur
+# Unreferenced 5MB gallery zip — no references in src/ (DOWNLOADABLES/ content is untouched)
+static/ARTICLES/ISSUE1/MAG_GALLERY.zip

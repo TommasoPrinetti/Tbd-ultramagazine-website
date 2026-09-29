@@ -1,23 +1,109 @@
 <script>
-    export let callToAction = "CLICK ME TO READ";
-    export let magGalleryFolder;
-    export let lengthNumber = 5;
-    let currentImageIndex = 1; 
-
-    // Function to cycle through images
+    let {
+        images = []
+    } = $props();
+    
+    let currentImageIndex = $state(0); 
+    
     function cycleImages() {
-        currentImageIndex = (currentImageIndex % lengthNumber) + 1;
+        currentImageIndex = (currentImageIndex + 1) % images.length;
     }
- </script>
+ </script>  
 
+{#if images}
+  {#if images.length > 0}
+    <div class="gallery">
+        <h2>PREVIEW</h2>
+        <section>
+            {#each images as image, index}
+                <button id={`image${index + 1}`} onclick={cycleImages} class:current={currentImageIndex === index}>
+                    <img src={image} alt={`GALLERY_${index + 1}`}>
+                </button>
+            {/each}
+        </section>
+    </div>
+  {/if}
+{/if}
+<style>
 
- <gallery class="default_appear">
-    <h2>{callToAction}</h2>
-    <section>
-        {#each Array.from({ length: lengthNumber }, (_, i) => i + 1) as imageIndex}
-            <a id={`image${imageIndex}`} on:click={cycleImages} class:current={currentImageIndex === imageIndex}>
-                <img src={`${magGalleryFolder}/GALLERY_${imageIndex}.webp`} alt={`GALLERY_${imageIndex}`}>
-            </a>
-        {/each}
-    </section>
-</gallery>
+.gallery {
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+  align-items: center;
+
+  aspect-ratio: 16/9;
+
+  position: relative;
+
+  display: flex;
+  flex-shrink: 0;
+
+  flex-direction: column;
+  row-gap: var(--spacing-l);
+  padding: 0px var(--spacing-l);
+}
+
+.gallery h2 {
+  mix-blend-mode: difference;
+}
+
+.gallery section {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0px;
+}
+
+.gallery > section > button {
+  width: fit-content;
+  height: fit-content;
+  position: absolute;
+  top: 10%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery > section > button.current {
+  display: flex;
+}
+
+.gallery section button img {
+  height: 70vh;
+  object-fit: contain;
+  aspect-ratio: 16/9;
+}
+
+@media screen and (max-width: 480px) {
+  .gallery {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+
+  read > .gallery {
+    display: flex;
+  }
+
+  .gallery {
+    display: none;
+  }
+
+  .gallery section {
+    height: fit-content;
+  }
+
+  .gallery section button img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    height: auto;
+  }
+}
+</style>
