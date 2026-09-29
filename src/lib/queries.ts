@@ -3,9 +3,10 @@ import groq from "groq";
 // Single query to get all issues with all fields
 // Images are fetched with their asset references
 // Articles are included as nested objects with section, thumbnail, title, description
-export const allIssuesQuery = groq`*[_type == "issue"] | order(issueTitle asc) {
+export const allIssuesQuery = groq`*[_type == "issue"] | order(coalesce(releaseOrder, 9999) asc, issueTitle asc) {
   _id,
   showPage,
+  releaseOrder,
   isLatestIssue,
   issueTitle,
   issueHeroText,

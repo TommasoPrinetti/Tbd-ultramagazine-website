@@ -8,6 +8,13 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({name: 'showPage', title: 'Show page', type: 'boolean', initialValue: true}),
+    defineField({
+      name: 'releaseOrder',
+      title: 'Release order (No.)',
+      description: '1 = first shown on the homepage, 2 = second, … Issues without a number go last.',
+      type: 'number',
+      validation: (r) => r.integer().min(1),
+    }),
     defineField({name: 'issueTitle', title: 'Issue title', type: 'string', validation: (r) => r.required()}),
     defineField({name: 'isLatestIssue', title: 'Latest issue', type: 'boolean', initialValue: false}),
     defineField({name: 'issueHeroText', title: 'Hero text', type: 'text'}),
